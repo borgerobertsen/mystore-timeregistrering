@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystore – Timeregistrering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <script src="config.js?v=3"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #026B85; --teal-dark: #013E52; --teal-light: #E8F4F7;
+      --success: #00734D; --success-light: #E6F4EA;
+      --error: #C0392B; --error-light: #FDF0EF;
+      --amber: #F4E114; --amber-dark: #7A6F00;
+      --text: #1A1A1A; --text-muted: #5A6472;
+      --border: #D0D7DE; --bg: #F5F7F9;
+    }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); min-height: 100vh; }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--teal-dark); color: #fff;
+      padding: 0 1.5rem; height: 52px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .topbar-logo { font-family: 'Ubuntu', sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .topbar-logo-mark { width: 28px; height: 28px; background: var(--teal); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .topbar-logo-mark svg { width: 16px; height: 16px; fill: #fff; }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; font-size: 13px; }
+    .week-badge { background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 12px; }
+    .user-name { opacity: 0.85; }
+    .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+    .btn-logout:hover { background: rgba(255,255,255,0.1); }
+
+    /* ── LAYOUT ── */
+    .main { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+    /* ── TIMER CARD ── */
+    .card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; color: var(--teal-dark); margin-bottom: 1rem; }
+
+    .timer-display { text-align: center; margin: 1rem 0; }
+    .timer-clock { font-family: 'Ubuntu', sans-serif; font-size: 52px; font-weight: 700; color: var(--teal-dark); letter-spacing: 2px; line-height: 1; }
+    .timer-clock.running { color: var(--teal); }
+
+    .timer-controls { display: flex; gap: 10px; justify-content: center; margin: 1rem 0; }
+    .btn-start { background: var(--teal); color: #fff; border: none; padding: 10px 28px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.15s; }
+    .btn-start:hover { background: var(--teal-dark); }
+    .btn-stop { background: #fff; color: var(--error); border: 1.5px solid var(--error); padding: 10px 28px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; }
+    .btn-stop:hover { background: var(--error-light); }
+    .btn-reset { background: #fff; color: var(--text-muted); border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+
+    /* ── HUBSPOT SØKEFELT ── */
+    .search-wrap { position: relative; margin-bottom: 0.75rem; }
+    .search-wrap input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Open Sans', sans-serif; font-size: 14px; color: var(--text); }
+    .search-wrap input:focus { outline: none; border-color: var(--teal); }
+    .search-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; max-height: 220px; overflow-y: auto; }
+    .search-item { padding: 10px 14px; font-size: 14px; cursor: pointer; border-bottom: 1px solid var(--border); }
+    .search-item:last-child { border-bottom: none; }
+    .search-item:hover { background: var(--teal-light); }
+    .search-item-name { font-weight: 500; color: var(--text); }
+    .search-item-domain { font-size: 12px; color: var(--text-muted); }
+    .selected-customer { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 8px; padding: 8px 12px; font-size: 14px; color: var(--teal-dark); display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .selected-customer button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; }
+
+    /* ── FORM ── */
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.75rem; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 12px; color: var(--text-muted); }
+    .form-group input, .form-group select, .form-group textarea {
+      padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+      font-family: 'Open Sans', sans-serif; font-size: 14px; color: var(--text);
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--teal); }
+    .form-group textarea { resize: vertical; min-height: 60px; }
+    .form-full { grid-column: 1 / -1; }
+
+    .btn-add { width: 100%; padding: 11px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 0.5rem; }
+    .btn-add:hover { background: #005a3c; }
+    .btn-add:disabled { background: #B0C4CC; cursor: not-allowed; }
+
+    /* ── TIMELISTE ── */
+    .time-entries { display: flex; flex-direction: column; gap: 8px; }
+    .entry-item { background: var(--bg); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; }
+    .entry-left { display: flex; flex-direction: column; gap: 2px; }
+    .entry-kunde { font-weight: 500; color: var(--text); }
+    .entry-meta { font-size: 12px; color: var(--text-muted); }
+    .entry-right { display: flex; align-items: center; gap: 10px; }
+    .entry-tid { font-family: 'Ubuntu', sans-serif; font-weight: 500; color: var(--teal-dark); }
+    .btn-delete { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; }
+    .btn-delete:hover { color: var(--error); }
+
+    .total-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--teal-light); border-radius: 8px; margin-top: 8px; }
+    .total-label { font-size: 13px; color: var(--teal-dark); }
+    .total-tid { font-family: 'Ubuntu', sans-serif; font-size: 18px; font-weight: 700; color: var(--teal-dark); }
+
+    .empty-state { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 14px; }
+
+    /* ── SUBMIT ── */
+    .btn-submit { width: 100%; padding: 14px; background: var(--teal); color: #fff; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 16px; font-weight: 500; cursor: pointer; margin-top: 0.5rem; }
+    .btn-submit:hover { background: var(--teal-dark); }
+    .btn-submit:disabled { background: #B0C4CC; cursor: not-allowed; }
+
+    .status-msg { text-align: center; font-size: 14px; margin-top: 0.5rem; min-height: 20px; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="topbar-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.5l7.5 3.75L12 12 4.5 8.25 12 4.5zM4 9.5l7 3.5v6.5L4 16V9.5zm9 10V13l7-3.5V16l-7 3.5z"/></svg>
+    </div>
+    Mystore
+  </div>
+  <div class="topbar-right">
+    <span class="week-badge" id="week-badge">Uke –</span>
+    <span class="user-name" id="user-name"></span>
+    <button class="btn-logout" onclick="loggUt()">Logg ut</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- TIMER CARD -->
+  <div class="card">
+    <div class="card-title">⏱ Timer</div>
+    <div class="timer-display">
+      <div class="timer-clock" id="timer-clock">00:00:00</div>
+    </div>
+    <div class="timer-controls">
+      <button class="btn-start" id="btn-start" onclick="startTimer()">Start</button>
+      <button class="btn-stop" id="btn-stop" onclick="stoppTimer()" style="display:none">Stopp</button>
+      <button class="btn-reset" onclick="resetTimer()">Nullstill</button>
+    </div>
+  </div>
+
+  <!-- REGISTRER TID -->
+  <div class="card">
+    <div class="card-title">➕ Registrer tid</div>
+
+    <!-- Kundesøk -->
+    <div id="kunde-sok-wrap">
+      <div class="search-wrap">
+        <input type="text" id="kunde-sok" placeholder="Søk etter kunde (HubSpot)..." autocomplete="off">
+        <div class="search-results" id="search-results" style="display:none"></div>
+      </div>
+    </div>
+    <div id="valgt-kunde-wrap" style="display:none">
+      <div class="selected-customer">
+        <span id="valgt-kunde-navn"></span>
+        <button onclick="fjernKunde()">✕</button>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Dato</label>
+        <input type="date" id="dato-input">
+      </div>
+      <div class="form-group">
+        <label>Timer brukt</label>
+        <input type="number" id="timer-input" min="0" max="24" step="0.25" placeholder="f.eks. 1.5">
+      </div>
+      <div class="form-group form-full">
+        <label>Kommentar</label>
+        <textarea id="kommentar-input" placeholder="Hva ble gjort?"></textarea>
+      </div>
+    </div>
+
+    <button class="btn-add" id="btn-add" onclick="leggTilPost()">Legg til</button>
+  </div>
+
+  <!-- DAGENS / UKENS TIMER -->
+  <div class="card">
+    <div class="card-title">📋 Timer denne uken</div>
+    <div class="time-entries" id="time-entries">
+      <div class="empty-state">Ingen timer registrert ennå</div>
+    </div>
+    <div class="total-bar" id="total-bar" style="display:none">
+      <span class="total-label">Totalt</span>
+      <span class="total-tid" id="total-tid">0t</span>
+    </div>
+  </div>
+
+  <!-- SEND INN -->
+  <button class="btn-submit" id="btn-submit" onclick="sendInn()">Send inn uke <span id="submit-uke"></span></button>
+  <p class="status-msg" id="status-msg"></p>
+
+</div>
+
+<script>
+  // ── Auth-sjekk ──
+  const ansattId   = localStorage.getItem('ms_employee_id');
+  const ansattNavn = localStorage.getItem('ms_employee_name');
+  if (!ansattId) window.location.href = 'index.html';
+
+  // ── Uke + bruker ──
+  function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  }
+  const now    = new Date();
+  const ukeNr  = getWeekNumber(now);
+  const aar    = now.getFullYear();
+  document.getElementById('week-badge').textContent = `Uke ${ukeNr} · ${aar}`;
+  document.getElementById('user-name').textContent  = ansattNavn;
+  document.getElementById('submit-uke').textContent = ukeNr;
+
+  // Sett dagens dato som standard
+  const datoInput = document.getElementById('dato-input');
+  datoInput.value = now.toISOString().split('T')[0];
+
+  // ── Timer ──
+  let timerInterval = null;
+  let sekunder = 0;
+  let timerRunning = false;
+
+  function formatTid(sek) {
+    const h = Math.floor(sek / 3600);
+    const m = Math.floor((sek % 3600) / 60);
+    const s = sek % 60;
+    return [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
+  }
+
+  function startTimer() {
+    timerRunning = true;
+    document.getElementById('btn-start').style.display = 'none';
+    document.getElementById('btn-stop').style.display = 'inline-block';
+    document.getElementById('timer-clock').classList.add('running');
+    timerInterval = setInterval(() => {
+      sekunder++;
+      document.getElementById('timer-clock').textContent = formatTid(sekunder);
+    }, 1000);
+  }
+
+  function stoppTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('btn-start').style.display = 'inline-block';
+    document.getElementById('btn-stop').style.display = 'none';
+    document.getElementById('timer-clock').classList.remove('running');
+    // Fyll inn timer-feltet automatisk
+    document.getElementById('timer-input').value = (sekunder / 3600).toFixed(2);
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    sekunder = 0;
+    document.getElementById('timer-clock').textContent = '00:00:00';
+    document.getElementById('timer-clock').classList.remove('running');
+    document.getElementById('btn-start').style.display = 'inline-block';
+    document.getElementById('btn-stop').style.display = 'none';
+  }
+
+  // ── HubSpot-søk ──
+  let debounceTimer = null;
+  let valgtKunde    = null;
+  const hsCache     = {};
+
+  document.getElementById('kunde-sok').addEventListener('input', e => {
+    clearTimeout(debounceTimer);
+    const q = e.target.value.trim();
+    if (q.length < 2) { skjulResultater(); return; }
+    debounceTimer = setTimeout(() => sokHubSpot(q), 300);
+  });
+
+  async function sokHubSpot(q) {
+    if (hsCache[q]) { visResultater(hsCache[q]); return; }
+    if (!CONFIG.HUBSPOT_TOKEN || CONFIG.HUBSPOT_TOKEN.startsWith('FYLL')) {
+      visResultater([{ id: 'demo-1', name: 'Demo Kunde AS', domain: 'demokunde.no' },
+                     { id: 'demo-2', name: 'Test Bedrift AS', domain: 'test.no' }]);
+      return;
+    }
+    try {
+      const res = await fetch('https://api.hubapi.com/crm/v3/objects/companies/search', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${CONFIG.HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filterGroups: [], query: q, properties: ['name','domain'], limit: 8 })
+      });
+      const data = await res.json();
+      const results = (data.results || []).map(r => ({ id: r.id, name: r.properties.name, domain: r.properties.domain }));
+      hsCache[q] = results;
+      visResultater(results);
+    } catch(e) { console.warn('HubSpot-søk feilet:', e); }
+  }
+
+  function visResultater(results) {
+    const el = document.getElementById('search-results');
+    if (!results.length) { el.style.display = 'none'; return; }
+    el.innerHTML = results.map(r => `
+      <div class="search-item" onclick="velgKunde('${r.id}','${r.name.replace(/'/g,"\\'")}','${r.domain||''}')">
+        <div class="search-item-name">${r.name}</div>
+        <div class="search-item-domain">${r.domain||''}</div>
+      </div>`).join('');
+    el.style.display = 'block';
+  }
+
+  function skjulResultater() { document.getElementById('search-results').style.display = 'none'; }
+
+  function velgKunde(id, navn, domain) {
+    valgtKunde = { id, navn, domain };
+    document.getElementById('kunde-sok-wrap').style.display = 'none';
+    document.getElementById('valgt-kunde-wrap').style.display = 'block';
+    document.getElementById('valgt-kunde-navn').textContent = navn;
+    skjulResultater();
+  }
+
+  function fjernKunde() {
+    valgtKunde = null;
+    document.getElementById('kunde-sok-wrap').style.display = 'block';
+    document.getElementById('valgt-kunde-wrap').style.display = 'none';
+    document.getElementById('kunde-sok').value = '';
+  }
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.search-wrap')) skjulResultater();
+  });
+
+  // ── Timepost-liste ──
+  let poster = JSON.parse(localStorage.getItem('ms_draft_' + ukeNr) || '[]');
+
+  function lagreDraft() {
+    localStorage.setItem('ms_draft_' + ukeNr, JSON.stringify(poster));
+  }
+
+  function visTimer() {
+    const el = document.getElementById('time-entries');
+    const totalBar = document.getElementById('total-bar');
+    if (!poster.length) {
+      el.innerHTML = '<div class="empty-state">Ingen timer registrert ennå</div>';
+      totalBar.style.display = 'none';
+      return;
+    }
+    el.innerHTML = poster.map((p, i) => `
+      <div class="entry-item">
+        <div class="entry-left">
+          <div class="entry-kunde">${p.kunde_navn}</div>
+          <div class="entry-meta">${p.dato} · ${p.kommentar || '–'}</div>
+        </div>
+        <div class="entry-right">
+          <span class="entry-tid">${(p.minutter/60).toFixed(1)}t</span>
+          <button class="btn-delete" onclick="slettPost(${i})">🗑</button>
+        </div>
+      </div>`).join('');
+    const totalMin = poster.reduce((s, p) => s + p.minutter, 0);
+    document.getElementById('total-tid').textContent = (totalMin/60).toFixed(1) + 't';
+    totalBar.style.display = 'flex';
+  }
+
+  function leggTilPost() {
+    if (!valgtKunde) { alert('Velg en kunde først.'); return; }
+    const timerVal = parseFloat(document.getElementById('timer-input').value);
+    if (!timerVal || timerVal <= 0) { alert('Angi antall timer.'); return; }
+    const dato = document.getElementById('dato-input').value;
+    if (!dato) { alert('Velg dato.'); return; }
+    poster.push({
+      dato,
+      hubspot_id: valgtKunde.id,
+      kunde_navn: valgtKunde.navn,
+      minutter: Math.round(timerVal * 60),
+      kommentar: document.getElementById('kommentar-input').value.trim(),
+      kilde: 'manuell'
+    });
+    lagreDraft();
+    visTimer();
+    // Nullstill skjema
+    fjernKunde();
+    document.getElementById('timer-input').value = '';
+    document.getElementById('kommentar-input').value = '';
+    resetTimer();
+  }
+
+  function slettPost(i) {
+    poster.splice(i, 1);
+    lagreDraft();
+    visTimer();
+  }
+
+  visTimer();
+
+  // ── Send inn ──
+  async function sendInn() {
+    if (!poster.length) { alert('Ingen timer å sende inn.'); return; }
+    const btn = document.getElementById('btn-submit');
+    const msg = document.getElementById('status-msg');
+    btn.disabled = true;
+    btn.textContent = 'Sender inn...';
+
+    try {
+      const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'submit_week',
+          ansatt_id: ansattId,
+          ansatt_navn: ansattNavn,
+          avdeling: '',
+          uke_nr: ukeNr,
+          aar,
+          timer: poster
+        })
+      });
+      const data = await res.json();
+      if (data.status === 'ok') {
+        localStorage.removeItem('ms_draft_' + ukeNr);
+        msg.style.color = 'var(--success)';
+        msg.textContent = `✓ Uke ${ukeNr} er sendt inn! ${data.rows_written} poster lagret.`;
+        poster = [];
+        visTimer();
+      } else if (data.status === 'duplikat') {
+        if (confirm(data.message)) {
+          poster[0].overskrive = true;
+          sendInn();
+        }
+        btn.disabled = false;
+        btn.textContent = `Send inn uke ${ukeNr}`;
+      } else {
+        msg.style.color = 'var(--error)';
+        msg.textContent = 'Feil: ' + data.message;
+        btn.disabled = false;
+        btn.textContent = `Send inn uke ${ukeNr}`;
+      }
+    } catch(e) {
+      msg.style.color = 'var(--error)';
+      msg.textContent = 'Tilkoblingsfeil. Prøv igjen.';
+      btn.disabled = false;
+      btn.textContent = `Send inn uke ${ukeNr}`;
+    }
+  }
+
+  function loggUt() {
+    localStorage.removeItem('ms_employee_id');
+    localStorage.removeItem('ms_employee_name');
+    localStorage.removeItem('ms_session');
+    window.location.href = 'index.html';
+  }
+</script>
+
+</body>
+</html>
