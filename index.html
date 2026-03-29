@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystore Timeregistrering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <script src="config.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal: #026B85;
+      --teal-dark: #013E52;
+      --teal-light: #E8F4F7;
+      --success: #00734D;
+      --error: #C0392B;
+      --text: #1A1A1A;
+      --text-muted: #5A6472;
+      --border: #D0D7DE;
+      --bg: #F5F7F9;
+    }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 2rem;
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--teal);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo-mark svg { width: 20px; height: 20px; fill: #fff; }
+
+    .logo-text {
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--teal-dark);
+      letter-spacing: -0.3px;
+    }
+
+    h1 {
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 22px;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    .employee-select {
+      width: 100%;
+      padding: 10px 14px;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 15px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: var(--text);
+      margin-bottom: 1rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%235A6472' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      cursor: pointer;
+    }
+
+    .employee-select:focus { outline: none; border-color: var(--teal); }
+
+    .pin-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+      text-align: left;
+    }
+
+    .pin-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .pin-inputs input {
+      width: 52px;
+      height: 60px;
+      text-align: center;
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 24px;
+      font-weight: 500;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.15s;
+    }
+
+    .pin-inputs input:focus {
+      outline: none;
+      border-color: var(--teal);
+      background: var(--teal-light);
+    }
+
+    .pin-inputs input.filled { border-color: var(--teal); }
+    .pin-inputs input.error { border-color: var(--error); background: #FDF0EF; }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: var(--teal);
+      color: #fff;
+      font-family: 'Ubuntu', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .btn-primary:hover { background: var(--teal-dark); }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-primary:disabled { background: #B0C4CC; cursor: not-allowed; }
+
+    .error-msg {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 0.75rem;
+      min-height: 18px;
+    }
+
+    .forgot-pin {
+      margin-top: 1.25rem;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .forgot-pin a {
+      color: var(--teal);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-pin a:hover { text-decoration: underline; }
+
+    .week-badge {
+      display: inline-block;
+      background: var(--teal-light);
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+    }
+
+    .spinner {
+      display: none;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.5l7.5 3.75L12 12 4.5 8.25 12 4.5zM4 9.5l7 3.5v6.5L4 16V9.5zm9 10V13l7-3.5V16l-7 3.5z"/></svg>
+    </div>
+    <span class="logo-text">Mystore</span>
+  </div>
+
+  <div class="week-badge" id="week-badge">Uke –</div>
+
+  <h1>Logg inn</h1>
+  <p class="subtitle">Velg navn og skriv inn din PIN</p>
+
+  <select class="employee-select" id="employee-select">
+    <option value="">— Velg ansatt —</option>
+  </select>
+
+  <p class="pin-label">4-sifret PIN</p>
+  <div class="pin-inputs" id="pin-inputs">
+    <input type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" data-index="0">
+    <input type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" data-index="1">
+    <input type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" data-index="2">
+    <input type="password" inputmode="numeric" maxlength="1" pattern="[0-9]" autocomplete="off" data-index="3">
+  </div>
+
+  <button class="btn-primary" id="login-btn" disabled>
+    <span id="btn-text">Logg inn</span>
+    <div class="spinner" id="spinner"></div>
+  </button>
+
+  <p class="error-msg" id="error-msg"></p>
+
+  <p class="forgot-pin">
+    Glemt PIN? <a href="#" id="reset-link">Send kode via Slack</a>
+  </p>
+</div>
+
+<script>
+  // ── Uke-badge ──
+  function getWeekNumber(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  }
+  const now = new Date();
+  document.getElementById('week-badge').textContent = `Uke ${getWeekNumber(now)} · ${now.getFullYear()}`;
+
+  // ── Last ansatte fra Apps Script ──
+  const select = document.getElementById('employee-select');
+
+  async function loadEmployees() {
+    try {
+      const res = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=getEmployees`);
+      const data = await res.json();
+      if (data.employees) {
+        data.employees.forEach(emp => {
+          const opt = document.createElement('option');
+          opt.value = emp.id;
+          opt.textContent = emp.navn;
+          select.appendChild(opt);
+        });
+      }
+    } catch (e) {
+      // Fallback: vis feilmelding
+      console.warn('Kunne ikke laste ansatte:', e);
+    }
+  }
+  loadEmployees();
+
+  // ── PIN-input logikk ──
+  const pinInputs = Array.from(document.querySelectorAll('.pin-inputs input'));
+  const loginBtn = document.getElementById('login-btn');
+  const errorMsg = document.getElementById('error-msg');
+
+  function getPin() { return pinInputs.map(i => i.value).join(''); }
+
+  function checkReady() {
+    const ready = select.value && getPin().length === 4;
+    loginBtn.disabled = !ready;
+  }
+
+  select.addEventListener('change', () => { checkReady(); errorMsg.textContent = ''; });
+
+  pinInputs.forEach((input, idx) => {
+    input.addEventListener('input', e => {
+      const val = e.target.value.replace(/[^0-9]/g, '');
+      input.value = val;
+      input.classList.toggle('filled', val.length === 1);
+      if (val && idx < 3) pinInputs[idx + 1].focus();
+      checkReady();
+      errorMsg.textContent = '';
+    });
+
+    input.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !input.value && idx > 0) {
+        pinInputs[idx - 1].focus();
+        pinInputs[idx - 1].value = '';
+        pinInputs[idx - 1].classList.remove('filled');
+        checkReady();
+      }
+    });
+  });
+
+  // ── Innlogging ──
+  loginBtn.addEventListener('click', async () => {
+    const employeeId = select.value;
+    const pin = getPin();
+
+    loginBtn.disabled = true;
+    document.getElementById('btn-text').style.display = 'none';
+    document.getElementById('spinner').style.display = 'block';
+    errorMsg.textContent = '';
+
+    try {
+      const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'login', employeeId, pin })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem('ms_employee_id', employeeId);
+        localStorage.setItem('ms_employee_name', data.navn);
+        localStorage.setItem('ms_session', data.session);
+        window.location.href = 'register.html';
+      } else {
+        pinInputs.forEach(i => { i.classList.add('error'); i.value = ''; i.classList.remove('filled'); });
+        pinInputs[0].focus();
+        errorMsg.textContent = data.message || 'Feil PIN. Prøv igjen.';
+        loginBtn.disabled = false;
+        document.getElementById('btn-text').style.display = 'block';
+        document.getElementById('spinner').style.display = 'none';
+      }
+    } catch (e) {
+      errorMsg.textContent = 'Tilkoblingsfeil. Prøv igjen.';
+      loginBtn.disabled = false;
+      document.getElementById('btn-text').style.display = 'block';
+      document.getElementById('spinner').style.display = 'none';
+    }
+  });
+
+  // ── PIN-reset via Slack ──
+  document.getElementById('reset-link').addEventListener('click', async (e) => {
+    e.preventDefault();
+    if (!select.value) {
+      errorMsg.textContent = 'Velg ansatt først.';
+      return;
+    }
+    try {
+      const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'requestPinReset', employeeId: select.value })
+      });
+      const data = await res.json();
+      errorMsg.style.color = data.success ? 'var(--success)' : 'var(--error)';
+      errorMsg.textContent = data.success
+        ? 'Kode sendt på Slack! Gjelder i 10 min.'
+        : 'Kunne ikke sende kode. Kontakt admin.';
+    } catch (e) {
+      errorMsg.textContent = 'Tilkoblingsfeil.';
+    }
+  });
+</script>
+
+</body>
+</html>
