@@ -28,6 +28,7 @@
 
     .main { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem; }
 
+    /* ── TIMER BAR ── */
     .timer-bar { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: 1rem; position: relative; z-index: 10; }
     .timer-bar.running { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(2,107,133,0.1); }
     .timer-row { display: flex; align-items: center; gap: 10px; }
@@ -43,9 +44,10 @@
     .btn-start-round { width: 40px; height: 40px; border-radius: 50%; background: var(--teal); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s; }
     .btn-start-round:hover { background: var(--teal-dark); }
     .btn-start-round svg { width: 16px; height: 16px; fill: #fff; }
-    .btn-stop-round { background: var(--error); }
-    .btn-stop-round:hover { background: #a93226; }
+    .btn-stop-round { background: var(--error) !important; }
+    .btn-stop-round:hover { background: #a93226 !important; }
 
+    /* ── KUNDE DROPDOWN ── */
     .kunde-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 200; width: 280px; padding: 8px; }
     .kunde-dropdown input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 6px; font-family: 'Open Sans', sans-serif; }
     .kunde-dropdown input:focus { border-color: var(--teal); }
@@ -59,19 +61,22 @@
     .snarvei-item { padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; color: var(--teal-dark); }
     .snarvei-item:hover { background: var(--teal-light); }
 
-    .lagre-panel { background: var(--teal-light); border-top: 1px solid var(--teal); border-radius: 0 0 12px 12px; padding: 1.25rem; margin: 0.75rem -1.25rem -1rem; }
+    /* ── LAGRE PANEL ── */
+    .lagre-panel { background: var(--teal-light); border-top: 1px solid rgba(2,107,133,0.2); border-radius: 0 0 11px 11px; padding: 1.25rem; margin: 0.75rem -1.25rem -1rem; }
     .lagre-panel-title { font-size: 13px; font-weight: 500; color: var(--teal-dark); margin-bottom: 1rem; }
-    .lagre-grid { display: grid; grid-template-columns: 1fr 140px 140px; gap: 10px; margin-bottom: 0.75rem; }
+    .lagre-grid { display: grid; grid-template-columns: 1fr 130px 140px; gap: 10px; margin-bottom: 0.75rem; }
     .lagre-group { display: flex; flex-direction: column; gap: 4px; }
     .lagre-group label { font-size: 12px; color: var(--teal-dark); font-weight: 500; }
     .lagre-group input, .lagre-group textarea { padding: 8px 10px; border: 1px solid rgba(2,107,133,0.3); border-radius: 7px; font-family: 'Open Sans', sans-serif; font-size: 14px; background: #fff; color: var(--text); }
     .lagre-group input:focus, .lagre-group textarea:focus { outline: none; border-color: var(--teal); }
-    .lagre-group textarea { resize: none; height: 72px; grid-column: 1/-1; }
+    .lagre-group textarea { resize: none; height: 72px; }
+    .lagre-kommentar-wrap { margin-bottom: 0.75rem; }
     .lagre-btns { display: flex; gap: 8px; }
     .btn-lagre { background: var(--teal); color: #fff; border: none; padding: 10px 24px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
     .btn-lagre:hover { background: var(--teal-dark); }
     .btn-forkast { background: #fff; color: var(--text-muted); border: 1px solid var(--border); padding: 10px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
+    /* ── MANUELL ── */
     .manuell-toggle { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--text-muted); font-family: 'Open Sans', sans-serif; font-size: 14px; cursor: pointer; padding: 0.25rem 0; margin-bottom: 0.5rem; }
     .manuell-toggle:hover { color: var(--teal); }
     .manuell-toggle .plus { width: 22px; height: 22px; background: var(--teal-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--teal); line-height: 1; }
@@ -92,6 +97,7 @@
     .btn-add-manuell { width: 100%; padding: 10px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 0.25rem; }
     .btn-add-manuell:hover { background: #005a3c; }
 
+    /* ── TIMELISTE ── */
     .card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
     .card-title { font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; color: var(--teal-dark); margin-bottom: 1rem; }
     .time-entries { display: flex; flex-direction: column; gap: 6px; }
@@ -172,7 +178,7 @@
       <div class="timer-divider"></div>
       <div class="timer-clock-sm" id="timer-clock">00:00</div>
       <button class="btn-start-round" id="btn-timer" onclick="toggleTimer()">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="btn-timer-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
       </button>
     </div>
 
@@ -185,20 +191,22 @@
           <input type="text" id="lagre-kunde-navn" readonly style="background:var(--teal-light);border-color:transparent">
         </div>
         <div class="lagre-group">
-          <label>Timer</label>
-          <input type="number" id="lagre-timer" min="0" max="24" step="0.25">
+          <label>Timer brukt</label>
+          <input type="number" id="lagre-timer" min="0.25" max="24" step="0.25">
         </div>
         <div class="lagre-group">
           <label>Dato</label>
           <input type="date" id="lagre-dato">
         </div>
       </div>
-      <div class="lagre-group" style="margin-bottom:1rem">
-        <label>Kommentar</label>
-        <textarea id="lagre-kommentar" placeholder="Hva ble gjort?"></textarea>
+      <div class="lagre-kommentar-wrap">
+        <div class="lagre-group">
+          <label>Kommentar</label>
+          <textarea id="lagre-kommentar" placeholder="Hva ble gjort?"></textarea>
+        </div>
       </div>
       <div class="lagre-btns">
-        <button class="btn-lagre" onclick="lagrePost()">Lagre</button>
+        <button class="btn-lagre" id="btn-lagre" onclick="lagrePost()">Lagre</button>
         <button class="btn-forkast" onclick="forkastPost()">Forkast</button>
       </div>
     </div>
@@ -224,8 +232,8 @@
         <input type="date" id="manuell-dato">
       </div>
       <div class="form-group">
-        <label>Timer</label>
-        <input type="number" id="manuell-timer" min="0" max="24" step="0.25" placeholder="f.eks. 1.5">
+        <label>Timer brukt</label>
+        <input type="number" id="manuell-timer" min="0.25" max="24" step="0.25" placeholder="f.eks. 1.5">
       </div>
     </div>
     <div class="form-group" style="margin-bottom:0.75rem">
@@ -262,9 +270,9 @@
     d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
     return Math.ceil((((d - new Date(Date.UTC(d.getUTCFullYear(),0,1))) / 86400000) + 1) / 7);
   }
-  const now      = new Date();
-  const ukeNr    = getWeekNumber(now);
-  const aar      = now.getFullYear();
+  const now        = new Date();
+  const ukeNr      = getWeekNumber(now);
+  const aar        = now.getFullYear();
   const dagensDato = now.toISOString().split('T')[0];
 
   document.getElementById('week-badge').textContent = `Uke ${ukeNr} · ${aar}`;
@@ -277,21 +285,25 @@
     return new Promise((resolve, reject) => {
       const cb = 'cb_' + Date.now();
       const url = CONFIG.APPS_SCRIPT_URL + '?' +
-        Object.entries({...params, callback: cb}).map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+        Object.entries({...params, callback: cb})
+          .map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
       window[cb] = data => { delete window[cb]; resolve(data); };
       const s = document.createElement('script');
-      s.src = url; s.onerror = () => reject(new Error('JSONP feilet'));
+      s.src = url;
+      s.onerror = () => reject(new Error('JSONP feilet'));
       document.body.appendChild(s);
     });
   }
 
-  // ── Nylig brukte ──
+  // ── Nylig brukte kunder ──
   let nyligBrukte = JSON.parse(localStorage.getItem('ms_nylig') || '[]');
+
   function lagreNylig(kunde) {
     nyligBrukte = [kunde, ...nyligBrukte.filter(k => k.id !== kunde.id)].slice(0, 5);
     localStorage.setItem('ms_nylig', JSON.stringify(nyligBrukte));
     oppdaterSnarveier();
   }
+
   function oppdaterSnarveier() {
     const wrap  = document.getElementById('snarveier-wrap');
     const liste = document.getElementById('snarveier-liste');
@@ -318,7 +330,9 @@
           { id: 'demo-2', name: 'Test Bedrift AS', domain: 'test.no' },
           { id: 'demo-3', name: 'Eksempel Firma AS', domain: 'eksempel.no' }
         ];
-        hsCache[q] = demo; visResultater(demo, resultatEl, velgFn); return;
+        hsCache[q] = demo;
+        visResultater(demo, resultatEl, velgFn);
+        return;
       }
       try {
         const res = await fetch('https://api.hubapi.com/crm/v3/objects/companies/search', {
@@ -327,8 +341,13 @@
           body: JSON.stringify({ query: q, properties: ['name','domain'], limit: 8 })
         });
         const data = await res.json();
-        const results = (data.results||[]).map(r => ({ id: r.id, name: r.properties.name, domain: r.properties.domain||'' }));
-        hsCache[q] = results; visResultater(results, resultatEl, velgFn);
+        const results = (data.results||[]).map(r => ({
+          id: r.id,
+          name: r.properties.name,
+          domain: r.properties.domain || ''
+        }));
+        hsCache[q] = results;
+        visResultater(results, resultatEl, velgFn);
       } catch(e) { console.warn('HubSpot feilet'); }
     }, 300);
   }
@@ -346,21 +365,27 @@
   document.getElementById('kunde-dropdown-sok').addEventListener('input', e => {
     sokHubSpot(e.target.value.trim(), document.getElementById('kunde-resultater'), 'velgKunde');
   });
+
   document.getElementById('manuell-sok').addEventListener('input', e => {
     sokHubSpot(e.target.value.trim(), document.getElementById('manuell-resultater'), 'velgManuellKunde');
   });
+
   document.addEventListener('click', e => {
-    if (!e.target.closest('.timer-kunde-wrap')) document.getElementById('kunde-dropdown').style.display = 'none';
-    if (!e.target.closest('#manuell-sok-wrap'))  document.getElementById('manuell-resultater').style.display = 'none';
+    if (!e.target.closest('.timer-kunde-wrap')) {
+      document.getElementById('kunde-dropdown').style.display = 'none';
+    }
+    if (!e.target.closest('#manuell-sok-wrap')) {
+      document.getElementById('manuell-resultater').style.display = 'none';
+    }
   });
 
   // ── TIMER ──
-  let aktivKunde    = null;
-  let timerRunning  = false;
-  let sekunder      = 0;
-  let sekunderVedStopp = 0;
-  let timerInterval = null;
-  let ventePaLagring = false;
+  let aktivKunde       = null;
+  let timerRunning     = false;
+  let sekunder         = 0;
+  let tidVedStopp      = 0;
+  let timerInterval    = null;
+  let ventePaLagring   = false;
 
   function toggleKundeDropdown() {
     if (ventePaLagring) return;
@@ -388,34 +413,45 @@
     return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
+  function sekunderTilTimer(sek) {
+    // Rund opp til nærmeste 0.25t, minimum 0.25
+    const timer = sek / 3600;
+    const rundet = Math.max(0.25, Math.ceil(timer * 4) / 4);
+    return rundet;
+  }
+
   function toggleTimer() {
     if (ventePaLagring) return;
+
     if (timerRunning) {
-      // STOPP – lagre sekunder FØR noe annet
+      // STOPP – lagre tid FØR vi gjør noe annet
+      tidVedStopp = sekunder;
       clearInterval(timerInterval);
       timerRunning = false;
-      sekunderVedStopp = sekunder;
 
-      document.getElementById('btn-timer').innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+      // Oppdater knapp
       document.getElementById('btn-timer').classList.remove('btn-stop-round');
+      document.getElementById('btn-timer-icon').innerHTML = '<path d="M8 5v14l11-7z"/>';
       document.getElementById('timer-bar').classList.remove('running');
 
-      // Vis lagre-panel med riktig tid
+      // Vis lagre-panel
       ventePaLagring = true;
       document.getElementById('overlay').classList.add('active');
       document.getElementById('lagre-panel').style.display = 'block';
-      document.getElementById('lagre-kunde-navn').value = aktivKunde ? aktivKunde.name : '';
-      document.getElementById('lagre-kommentar').value  = document.getElementById('timer-kommentar').value.trim();
-      document.getElementById('lagre-timer').value      = (sekunderVedStopp / 3600).toFixed(2);
-      document.getElementById('lagre-dato').value       = dagensDato;
+      document.getElementById('lagre-kunde-navn').value   = aktivKunde ? aktivKunde.name : '';
+      document.getElementById('lagre-kommentar').value    = document.getElementById('timer-kommentar').value.trim();
+      document.getElementById('lagre-timer').value        = sekunderTilTimer(tidVedStopp).toFixed(2);
+      document.getElementById('lagre-dato').value         = dagensDato;
+
       setTimeout(() => document.getElementById('lagre-kommentar').focus(), 100);
 
     } else {
       // START
       timerRunning = true;
-      document.getElementById('btn-timer').innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
       document.getElementById('btn-timer').classList.add('btn-stop-round');
+      document.getElementById('btn-timer-icon').innerHTML = '<rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/>';
       document.getElementById('timer-bar').classList.add('running');
+
       timerInterval = setInterval(() => {
         sekunder++;
         document.getElementById('timer-clock').textContent = formatTid(sekunder);
@@ -426,26 +462,32 @@
 
   function lagrePost() {
     const timerVal = parseFloat(document.getElementById('lagre-timer').value);
-    if (!timerVal || timerVal <= 0) { alert('Angi gyldig tid.'); return; }
-    poster.push({
+    if (!timerVal || timerVal <= 0) {
+      alert('Angi gyldig tid.');
+      return;
+    }
+    const post = {
       dato:       document.getElementById('lagre-dato').value || dagensDato,
       hubspot_id: aktivKunde ? aktivKunde.id : 'ukjent',
       kunde_navn: aktivKunde ? aktivKunde.name : document.getElementById('lagre-kunde-navn').value,
       minutter:   Math.round(timerVal * 60),
       kommentar:  document.getElementById('lagre-kommentar').value.trim(),
       kilde:      'timer'
-    });
+    };
+    poster.push(post);
     lagreDraft();
     visTimer();
     lukkLagrePanel();
   }
 
-  function forkastPost() { lukkLagrePanel(); }
+  function forkastPost() {
+    lukkLagrePanel();
+  }
 
   function lukkLagrePanel() {
-    ventePaLagring    = false;
-    sekunder          = 0;
-    sekunderVedStopp  = 0;
+    ventePaLagring = false;
+    sekunder       = 0;
+    tidVedStopp    = 0;
     document.getElementById('timer-clock').textContent = '00:00';
     document.getElementById('timer-clock').classList.remove('running');
     document.getElementById('timer-kommentar').value   = '';
@@ -497,14 +539,14 @@
     lagreDraft();
     visTimer();
     fjernManuellKunde();
-    document.getElementById('manuell-timer').value    = '';
+    document.getElementById('manuell-timer').value     = '';
     document.getElementById('manuell-kommentar').value = '';
     document.getElementById('manuell-panel').classList.remove('open');
     manuellPanelOpen = false;
   }
 
   // ── TIMELISTE ──
-  let poster = JSON.parse(localStorage.getItem('ms_draft_' + ukeNr) || '[]');
+  let poster         = JSON.parse(localStorage.getItem('ms_draft_' + ukeNr) || '[]');
   let redigererIndex = null;
 
   function lagreDraft() {
@@ -516,7 +558,8 @@
     const totalBar = document.getElementById('total-bar');
     if (!poster.length) {
       el.innerHTML = '<div class="empty-state">Ingen timer registrert ennå</div>';
-      totalBar.style.display = 'none'; return;
+      totalBar.style.display = 'none';
+      return;
     }
     el.innerHTML = poster.map((p, i) => `
       <div class="entry-item ${redigererIndex === i ? 'editing' : ''}" onclick="startRediger(${i})">
@@ -538,7 +581,7 @@
           </div>
           <div class="entry-edit-group">
             <label>Timer</label>
-            <input type="number" id="edit-timer" value="${(p.minutter/60).toFixed(2)}" min="0" max="24" step="0.25">
+            <input type="number" id="edit-timer" value="${(p.minutter/60).toFixed(2)}" min="0.25" max="24" step="0.25">
           </div>
           <div class="entry-edit-group">
             <label>Dato</label>
@@ -602,17 +645,27 @@
     }
     const btn = document.getElementById('btn-submit');
     const msg = document.getElementById('status-msg');
-    btn.disabled = true; btn.textContent = 'Sender inn...'; msg.textContent = '';
+    btn.disabled = true;
+    btn.textContent = 'Sender inn...';
+    msg.textContent = '';
+
     try {
       const data = await jsonpGet({
-        action: 'submit_week', ansatt_id: ansattId, ansatt_navn: ansattNavn,
-        avdeling: '', uke_nr: ukeNr, aar, timer: JSON.stringify(poster)
+        action:      'submit_week',
+        ansatt_id:   ansattId,
+        ansatt_navn: ansattNavn,
+        avdeling:    '',
+        uke_nr:      ukeNr,
+        aar,
+        timer:       JSON.stringify(poster)
       });
+
       if (data.status === 'ok') {
         localStorage.removeItem('ms_draft_' + ukeNr);
         msg.style.color = 'var(--success)';
         msg.textContent = `✓ Uke ${ukeNr} sendt inn! ${data.rows_written} poster lagret.`;
-        poster = []; visTimer();
+        poster = [];
+        visTimer();
       } else if (data.status === 'duplikat') {
         if (confirm(data.message)) {
           const d2 = await jsonpGet({
@@ -623,19 +676,23 @@
             localStorage.removeItem('ms_draft_' + ukeNr);
             msg.style.color = 'var(--success)';
             msg.textContent = `✓ Uke ${ukeNr} oppdatert.`;
-            poster = []; visTimer();
+            poster = [];
+            visTimer();
           }
         }
-        btn.disabled = false; btn.textContent = `Send inn uke ${ukeNr}`;
+        btn.disabled = false;
+        btn.textContent = `Send inn uke ${ukeNr}`;
       } else {
         msg.style.color = 'var(--error)';
         msg.textContent = 'Feil: ' + (data.message || 'Ukjent feil');
-        btn.disabled = false; btn.textContent = `Send inn uke ${ukeNr}`;
+        btn.disabled = false;
+        btn.textContent = `Send inn uke ${ukeNr}`;
       }
     } catch(e) {
       msg.style.color = 'var(--error)';
       msg.textContent = 'Tilkoblingsfeil. Prøv igjen.';
-      btn.disabled = false; btn.textContent = `Send inn uke ${ukeNr}`;
+      btn.disabled = false;
+      btn.textContent = `Send inn uke ${ukeNr}`;
     }
   }
 
