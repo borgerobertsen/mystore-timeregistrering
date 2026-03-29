@@ -17,11 +17,7 @@
     }
     body { font-family: 'Open Sans', sans-serif; background: var(--bg); min-height: 100vh; }
 
-    .topbar {
-      background: var(--teal-dark); color: #fff;
-      padding: 0 1.5rem; height: 52px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .topbar { background: var(--teal-dark); color: #fff; padding: 0 1.5rem; height: 52px; display: flex; align-items: center; justify-content: space-between; }
     .topbar-logo { font-family: 'Ubuntu', sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .topbar-logo-mark { width: 28px; height: 28px; background: var(--teal); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
     .topbar-logo-mark svg { width: 16px; height: 16px; fill: #fff; }
@@ -35,49 +31,61 @@
     .card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
     .card-title { font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; color: var(--teal-dark); margin-bottom: 1rem; }
 
-    /* ── KUNDEVALG + TIMER ── */
-    .kunde-timer-wrap { display: grid; grid-template-columns: 1fr auto; gap: 1rem; align-items: start; }
+    /* ── AKTIV TIMER CARD ── */
+    .aktiv-card { background: var(--teal-dark); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; color: #fff; }
+    .aktiv-card.idle { background: #fff; border: 1px solid var(--border); }
+    .aktiv-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+    .aktiv-label { font-size: 12px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.8px; }
+    .aktiv-card.idle .aktiv-label { color: var(--text-muted); }
+    .aktiv-kunde-navn { font-family: 'Ubuntu', sans-serif; font-size: 22px; font-weight: 700; margin-top: 2px; }
+    .aktiv-card.idle .aktiv-kunde-navn { color: var(--text-muted); font-size: 16px; font-weight: 400; }
+    .timer-clock { font-family: 'Ubuntu', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 2px; line-height: 1; }
+    .aktiv-card.idle .timer-clock { color: var(--border); font-size: 36px; }
+    .aktiv-bottom { display: flex; align-items: center; gap: 10px; margin-top: 1.25rem; flex-wrap: wrap; }
+    .btn-start { background: #fff; color: var(--teal-dark); border: none; padding: 10px 28px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .btn-start:hover { background: var(--teal-light); }
+    .btn-start:disabled { background: rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); cursor: not-allowed; }
+    .aktiv-card.idle .btn-start { background: var(--teal); color: #fff; }
+    .btn-stop { background: var(--error); color: #fff; border: none; padding: 10px 28px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .btn-bytt { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .btn-bytt:hover { background: rgba(255,255,255,0.25); }
+    .btn-reset-sm { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); border: none; padding: 10px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .aktiv-card.idle .btn-bytt, .aktiv-card.idle .btn-reset-sm { display: none; }
+
+    /* ── KUNDESØK MODAL-ISH ── */
+    .kunde-sok-panel { margin-bottom: 1rem; }
     .search-wrap { position: relative; }
-    .search-wrap input { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Open Sans', sans-serif; font-size: 14px; color: var(--text); }
+    .search-wrap input { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Open Sans', sans-serif; font-size: 15px; color: var(--text); }
     .search-wrap input:focus { outline: none; border-color: var(--teal); }
-    .search-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; max-height: 220px; overflow-y: auto; margin-top: 4px; }
+    .search-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 100; max-height: 240px; overflow-y: auto; margin-top: 4px; }
     .search-item { padding: 10px 14px; font-size: 14px; cursor: pointer; border-bottom: 1px solid var(--border); }
     .search-item:last-child { border-bottom: none; }
     .search-item:hover { background: var(--teal-light); }
     .search-item-name { font-weight: 500; color: var(--text); }
     .search-item-domain { font-size: 12px; color: var(--text-muted); }
-    .selected-customer { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 8px; padding: 10px 14px; font-size: 14px; color: var(--teal-dark); display: flex; align-items: center; justify-content: space-between; }
-    .selected-customer strong { font-weight: 500; }
-    .selected-customer button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; line-height: 1; }
 
-    /* ── TIMER ── */
-    .timer-box { display: flex; flex-direction: column; align-items: center; gap: 8px; min-width: 160px; }
-    .timer-clock { font-family: 'Ubuntu', sans-serif; font-size: 36px; font-weight: 700; color: var(--teal-dark); letter-spacing: 1px; }
-    .timer-clock.running { color: var(--teal); }
-    .timer-clock.disabled { color: var(--border); }
-    .timer-btns { display: flex; gap: 8px; }
-    .btn-start { background: var(--teal); color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
-    .btn-start:hover { background: var(--teal-dark); }
-    .btn-start:disabled { background: var(--border); cursor: not-allowed; }
-    .btn-stop { background: #fff; color: var(--error); border: 1.5px solid var(--error); padding: 8px 20px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
-    .btn-reset-sm { background: none; border: 1px solid var(--border); color: var(--text-muted); padding: 8px 12px; border-radius: 8px; font-size: 13px; cursor: pointer; }
-    .timer-hint { font-size: 12px; color: var(--text-muted); text-align: center; }
+    /* ── SNARVEIER ── */
+    .snarveier { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.75rem; }
+    .snarvei-label { font-size: 12px; color: var(--text-muted); width: 100%; }
+    .snarvei-btn { background: var(--teal-light); color: var(--teal-dark); border: 1px solid var(--teal); border-radius: 20px; padding: 5px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; }
+    .snarvei-btn:hover { background: var(--teal); color: #fff; }
 
-    /* ── FORM ── */
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 1rem; }
-    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    /* ── MANUELL FORM ── */
+    .selected-customer { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 8px; padding: 8px 12px; font-size: 14px; color: var(--teal-dark); display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+    .selected-customer button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 0.75rem; }
     .form-group label { font-size: 12px; color: var(--text-muted); }
     .form-group input, .form-group textarea { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Open Sans', sans-serif; font-size: 14px; color: var(--text); }
     .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--teal); }
     .form-group textarea { resize: vertical; min-height: 60px; }
     .form-full { grid-column: 1 / -1; }
-    .btn-add { width: 100%; padding: 11px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; margin-top: 0.75rem; }
+    .btn-add { width: 100%; padding: 11px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; }
     .btn-add:hover { background: #005a3c; }
-    .btn-add:disabled { background: var(--border); cursor: not-allowed; }
 
     /* ── TIMELISTE ── */
     .time-entries { display: flex; flex-direction: column; gap: 8px; }
-    .entry-item { background: var(--bg); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; border: 1px solid transparent; transition: border-color 0.15s; }
+    .entry-item { background: var(--bg); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; border: 1px solid transparent; }
     .entry-item.editing { border-color: var(--teal); background: var(--teal-light); }
     .entry-left { display: flex; flex-direction: column; gap: 2px; flex: 1; }
     .entry-kunde { font-weight: 500; color: var(--text); }
@@ -88,15 +96,12 @@
     .btn-edit:hover { border-color: var(--teal); color: var(--teal); }
     .btn-delete { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; }
     .btn-delete:hover { color: var(--error); }
-
-    /* ── REDIGERINGSPANEL ── */
-    .edit-panel { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 10px; padding: 1rem; margin-top: 8px; }
+    .edit-panel { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 10px; padding: 1rem; margin-top: 4px; }
     .edit-panel-title { font-size: 13px; font-weight: 500; color: var(--teal-dark); margin-bottom: 0.75rem; }
     .edit-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.75rem; }
     .edit-btns { display: flex; gap: 8px; }
     .btn-save { background: var(--teal); color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 14px; cursor: pointer; }
-    .btn-cancel { background: #fff; color: var(--text-muted); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
-
+    .btn-cancel-edit { background: #fff; color: var(--text-muted); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
     .total-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--teal-light); border-radius: 8px; margin-top: 8px; }
     .total-label { font-size: 13px; color: var(--teal-dark); }
     .total-tid { font-family: 'Ubuntu', sans-serif; font-size: 18px; font-weight: 700; color: var(--teal-dark); }
@@ -126,33 +131,32 @@
 
 <div class="main">
 
-  <!-- AKTIV KUNDE + TIMER -->
-  <div class="card">
-    <div class="card-title">⏱ Aktiv kunde og timer</div>
-    <div class="kunde-timer-wrap">
+  <!-- AKTIV TIMER -->
+  <div class="aktiv-card idle" id="aktiv-card">
+    <div class="aktiv-top">
       <div>
-        <div id="kunde-sok-wrap">
-          <div class="search-wrap">
-            <input type="text" id="kunde-sok" placeholder="Søk etter kunde for å starte timer..." autocomplete="off">
-            <div class="search-results" id="search-results" style="display:none"></div>
-          </div>
-          <div class="timer-hint" style="margin-top:6px">Velg kunde først, deretter start timeren</div>
-        </div>
-        <div id="valgt-kunde-wrap" style="display:none">
-          <div class="selected-customer">
-            <strong id="valgt-kunde-navn"></strong>
-            <button onclick="byttKunde()" title="Bytt kunde">✕</button>
-          </div>
-        </div>
+        <div class="aktiv-label">Jobber med</div>
+        <div class="aktiv-kunde-navn" id="aktiv-kunde-navn">Ingen kunde valgt</div>
       </div>
-      <div class="timer-box">
-        <div class="timer-clock disabled" id="timer-clock">00:00:00</div>
-        <div class="timer-btns">
-          <button class="btn-start" id="btn-start" onclick="startTimer()" disabled>Start</button>
-          <button class="btn-stop" id="btn-stop" onclick="stoppTimer()" style="display:none">Stopp</button>
-          <button class="btn-reset-sm" onclick="resetTimer()">↺</button>
-        </div>
-      </div>
+      <div class="timer-clock" id="timer-clock">00:00:00</div>
+    </div>
+    <div class="aktiv-bottom">
+      <button class="btn-start" id="btn-start" onclick="startTimer()" disabled>Start</button>
+      <button class="btn-stop" id="btn-stop" onclick="stoppOgLagre()" style="display:none">Stopp og lagre</button>
+      <button class="btn-bytt" onclick="visSokPanel()">Bytt kunde</button>
+      <button class="btn-reset-sm" onclick="resetTimer()">↺ Nullstill</button>
+    </div>
+  </div>
+
+  <!-- KUNDESØK PANEL -->
+  <div class="card kunde-sok-panel" id="kunde-sok-panel">
+    <div class="card-title">🔍 Velg kunde</div>
+    <div class="search-wrap">
+      <input type="text" id="kunde-sok" placeholder="Søk etter kunde..." autocomplete="off">
+      <div class="search-results" id="search-results" style="display:none"></div>
+    </div>
+    <div class="snarveier" id="snarveier" style="display:none">
+      <span class="snarvei-label">Nylig brukt</span>
     </div>
   </div>
 
@@ -180,12 +184,12 @@
         <label>Timer brukt</label>
         <input type="number" id="timer-input" min="0" max="24" step="0.25" placeholder="f.eks. 1.5">
       </div>
-      <div class="form-group form-full">
-        <label>Kommentar</label>
-        <textarea id="kommentar-input" placeholder="Hva ble gjort?"></textarea>
-      </div>
     </div>
-    <button class="btn-add" id="btn-add" onclick="leggTilPost()">Legg til</button>
+    <div class="form-group">
+      <label>Kommentar</label>
+      <textarea id="kommentar-input" placeholder="Hva ble gjort?"></textarea>
+    </div>
+    <button class="btn-add" onclick="leggTilPost()">Legg til</button>
   </div>
 
   <!-- TIMELISTE -->
@@ -226,7 +230,7 @@
   document.getElementById('submit-uke').textContent = ukeNr;
   document.getElementById('dato-input').value = now.toISOString().split('T')[0];
 
-  // ── JSONP hjelper ──
+  // ── JSONP ──
   function jsonpGet(params) {
     return new Promise((resolve, reject) => {
       const cbName = 'cb_' + Date.now();
@@ -234,23 +238,35 @@
         .map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
       window[cbName] = data => { delete window[cbName]; resolve(data); };
       const s = document.createElement('script');
-      s.src = url;
-      s.onerror = () => reject(new Error('JSONP feilet'));
+      s.src = url; s.onerror = () => reject(new Error('JSONP feilet'));
       document.body.appendChild(s);
     });
   }
 
-  async function sha256(str) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-    return Array.from(new Uint8Array(buf)).map(b => ('0' + b.toString(16)).slice(-2)).join('');
+  // ── Nylig brukte kunder ──
+  let nyligBrukte = JSON.parse(localStorage.getItem('ms_nylig_kunder') || '[]');
+
+  function lagreNyligBrukt(kunde) {
+    nyligBrukte = [kunde, ...nyligBrukte.filter(k => k.id !== kunde.id)].slice(0, 5);
+    localStorage.setItem('ms_nylig_kunder', JSON.stringify(nyligBrukte));
+    oppdaterSnarveier();
   }
 
-  // ── HubSpot-søk (generisk) ──
+  function oppdaterSnarveier() {
+    const el = document.getElementById('snarveier');
+    if (!nyligBrukte.length) { el.style.display = 'none'; return; }
+    el.style.display = 'flex';
+    el.innerHTML = '<span class="snarvei-label">Nylig brukt</span>' +
+      nyligBrukte.map(k => `<button class="snarvei-btn" onclick='velgAktivKunde(${JSON.stringify(k)})'>${k.name}</button>`).join('');
+  }
+  oppdaterSnarveier();
+
+  // ── HubSpot-søk ──
   const hsCache = {};
   let debounceTimers = {};
 
   function lagSok(inputId, resultatId, velgFn) {
-    const input = document.getElementById(inputId);
+    const input   = document.getElementById(inputId);
     const resultat = document.getElementById(resultatId);
     input.addEventListener('input', e => {
       clearTimeout(debounceTimers[inputId]);
@@ -268,9 +284,11 @@
   async function sokHubSpot(q, resultatEl, velgFn) {
     if (hsCache[q]) { visResultater(hsCache[q], resultatEl, velgFn); return; }
     if (!CONFIG.HUBSPOT_TOKEN || CONFIG.HUBSPOT_TOKEN.startsWith('FYLL')) {
-      const demo = [{ id: 'demo-1', name: 'Demo Kunde AS', domain: 'demokunde.no' },
-                    { id: 'demo-2', name: 'Test Bedrift AS', domain: 'test.no' },
-                    { id: 'demo-3', name: 'Eksempel Firma AS', domain: 'eksempel.no' }];
+      const demo = [
+        { id: 'demo-1', name: 'Demo Kunde AS', domain: 'demokunde.no' },
+        { id: 'demo-2', name: 'Test Bedrift AS', domain: 'test.no' },
+        { id: 'demo-3', name: 'Eksempel Firma AS', domain: 'eksempel.no' }
+      ];
       hsCache[q] = demo; visResultater(demo, resultatEl, velgFn); return;
     }
     try {
@@ -296,57 +314,78 @@
     el.style.display = 'block';
   }
 
-  // ── AKTIV TIMER MED KUNDE ──
-  let valgtKunde    = null;
+  lagSok('kunde-sok', 'search-results', 'velgAktivKunde');
+  lagSok('manuell-kunde-sok', 'manuell-search-results', 'velgManuellKunde');
+
+  // ── AKTIV TIMER ──
+  let aktivKunde   = null;
   let timerInterval = null;
   let sekunder      = 0;
   let timerRunning  = false;
 
-  lagSok('kunde-sok', 'search-results', 'velgAktivKunde');
-
   function velgAktivKunde(kunde) {
     if (timerRunning) {
-      if (confirm(`Bytt fra timer på "${valgtKunde.name}"?\nNåværende tid (${formatTid(sekunder)}) lagres som utkast.`)) {
-        lagreTimerSomUtkast();
+      if (confirm(`Bytt fra "${aktivKunde.name}"?\nTid (${formatTid(sekunder)}) lagres automatisk.`)) {
+        lagreTimerSomPost();
       } else return;
     }
-    valgtKunde = kunde;
-    document.getElementById('kunde-sok-wrap').style.display = 'none';
-    document.getElementById('valgt-kunde-wrap').style.display = 'block';
-    document.getElementById('valgt-kunde-navn').textContent = kunde.name;
-    document.getElementById('search-results').style.display = 'none';
-    document.getElementById('kunde-sok').value = '';
+    aktivKunde = kunde;
+    lagreNyligBrukt(kunde);
+    document.getElementById('aktiv-kunde-navn').textContent = kunde.name;
+    document.getElementById('aktiv-card').classList.remove('idle');
     document.getElementById('btn-start').disabled = false;
-    document.getElementById('timer-clock').classList.remove('disabled');
+    document.getElementById('kunde-sok').value = '';
+    document.getElementById('search-results').style.display = 'none';
   }
 
-  function byttKunde() {
-    if (timerRunning) {
-      if (!confirm('Timer kjører – vil du stoppe og bytte kunde?')) return;
-      lagreTimerSomUtkast();
-    }
+  function visSokPanel() {
+    document.getElementById('kunde-sok').focus();
+  }
+
+  function startTimer() {
+    if (!aktivKunde) return;
+    timerRunning = true;
+    document.getElementById('btn-start').style.display = 'none';
+    document.getElementById('btn-stop').style.display = 'inline-block';
+    timerInterval = setInterval(() => {
+      sekunder++;
+      document.getElementById('timer-clock').textContent = formatTid(sekunder);
+    }, 1000);
+  }
+
+  function stoppOgLagre() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('btn-start').style.display = 'inline-block';
+    document.getElementById('btn-stop').style.display = 'none';
+    // Fyll manuell form
+    document.getElementById('timer-input').value = (sekunder / 3600).toFixed(2);
+    if (aktivKunde) velgManuellKunde(aktivKunde);
     resetTimer();
-    valgtKunde = null;
-    document.getElementById('valgt-kunde-wrap').style.display = 'none';
-    document.getElementById('kunde-sok-wrap').style.display = 'block';
-    document.getElementById('btn-start').disabled = true;
-    document.getElementById('timer-clock').classList.add('disabled');
   }
 
-  function lagreTimerSomUtkast() {
-    if (sekunder < 60) { resetTimer(); return; }
-    const minutter = Math.round(sekunder / 60);
+  function lagreTimerSomPost() {
+    if (sekunder < 30) { resetTimer(); return; }
     poster.push({
       dato: now.toISOString().split('T')[0],
-      hubspot_id: valgtKunde.id,
-      kunde_navn: valgtKunde.name,
-      minutter,
+      hubspot_id: aktivKunde.id,
+      kunde_navn: aktivKunde.name,
+      minutter: Math.round(sekunder / 60),
       kommentar: '',
       kilde: 'timer'
     });
     lagreDraft();
     visTimer();
     resetTimer();
+  }
+
+  function resetTimer() {
+    clearInterval(timerInterval);
+    timerRunning = false;
+    sekunder = 0;
+    document.getElementById('timer-clock').textContent = '00:00:00';
+    document.getElementById('btn-start').style.display = 'inline-block';
+    document.getElementById('btn-stop').style.display = 'none';
   }
 
   function formatTid(sek) {
@@ -356,43 +395,8 @@
     return [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
   }
 
-  function startTimer() {
-    if (!valgtKunde) return;
-    timerRunning = true;
-    document.getElementById('btn-start').style.display = 'none';
-    document.getElementById('btn-stop').style.display = 'inline-block';
-    document.getElementById('timer-clock').classList.add('running');
-    document.getElementById('timer-clock').classList.remove('disabled');
-    timerInterval = setInterval(() => {
-      sekunder++;
-      document.getElementById('timer-clock').textContent = formatTid(sekunder);
-    }, 1000);
-  }
-
-  function stoppTimer() {
-    clearInterval(timerInterval);
-    timerRunning = false;
-    document.getElementById('btn-start').style.display = 'inline-block';
-    document.getElementById('btn-stop').style.display = 'none';
-    document.getElementById('timer-clock').classList.remove('running');
-    // Fyll manuell form med timerverdien og valgt kunde
-    document.getElementById('timer-input').value = (sekunder / 3600).toFixed(2);
-    if (valgtKunde && !manuellKunde) velgManuellKunde(valgtKunde);
-  }
-
-  function resetTimer() {
-    clearInterval(timerInterval);
-    timerRunning = false;
-    sekunder = 0;
-    document.getElementById('timer-clock').textContent = '00:00:00';
-    document.getElementById('timer-clock').classList.remove('running');
-    document.getElementById('btn-start').style.display = 'inline-block';
-    document.getElementById('btn-stop').style.display = 'none';
-  }
-
   // ── MANUELL REGISTRERING ──
   let manuellKunde = null;
-  lagSok('manuell-kunde-sok', 'manuell-search-results', 'velgManuellKunde');
 
   function velgManuellKunde(kunde) {
     manuellKunde = kunde;
@@ -401,6 +405,7 @@
     document.getElementById('manuell-valgt-navn').textContent = kunde.name;
     document.getElementById('manuell-search-results').style.display = 'none';
     document.getElementById('manuell-kunde-sok').value = '';
+    lagreNyligBrukt(kunde);
   }
 
   function fjernManuellKunde() {
@@ -428,10 +433,9 @@
     fjernManuellKunde();
     document.getElementById('timer-input').value = '';
     document.getElementById('kommentar-input').value = '';
-    resetTimer();
   }
 
-  // ── TIMELISTE MED REDIGERING ──
+  // ── TIMELISTE ──
   let poster = JSON.parse(localStorage.getItem('ms_draft_' + ukeNr) || '[]');
   let redigererIndex = null;
 
@@ -444,8 +448,7 @@
     const totalBar = document.getElementById('total-bar');
     if (!poster.length) {
       el.innerHTML = '<div class="empty-state">Ingen timer registrert ennå</div>';
-      totalBar.style.display = 'none';
-      return;
+      totalBar.style.display = 'none'; return;
     }
     el.innerHTML = poster.map((p, i) => `
       <div class="entry-item ${redigererIndex === i ? 'editing' : ''}" id="entry-${i}">
@@ -455,17 +458,17 @@
         </div>
         <div class="entry-right">
           <span class="entry-tid">${(p.minutter/60).toFixed(1)}t</span>
-          <button class="btn-edit" onclick="startRediger(${i})">✏️ Rediger</button>
+          <button class="btn-edit" onclick="startRediger(${i})">✏️</button>
           <button class="btn-delete" onclick="slettPost(${i})">🗑</button>
         </div>
       </div>
       ${redigererIndex === i ? `
-      <div class="edit-panel" id="edit-panel-${i}">
+      <div class="edit-panel">
         <div class="edit-panel-title">Rediger post</div>
         <div class="edit-form-row">
           <div class="form-group">
             <label>Kunde</label>
-            <input type="text" id="edit-kunde-navn" value="${p.kunde_navn}" style="background:#fff">
+            <input type="text" id="edit-kunde-navn" value="${p.kunde_navn}">
           </div>
           <div class="form-group">
             <label>Dato</label>
@@ -482,21 +485,17 @@
         </div>
         <div class="edit-btns">
           <button class="btn-save" onclick="lagreRediger(${i})">Lagre</button>
-          <button class="btn-cancel" onclick="avbrytRediger()">Avbryt</button>
+          <button class="btn-cancel-edit" onclick="avbrytRediger()">Avbryt</button>
         </div>
-      </div>` : ''}
-    `).join('');
+      </div>` : ''}`).join('');
 
     const totalMin = poster.reduce((s, p) => s + p.minutter, 0);
     document.getElementById('total-tid').textContent = (totalMin/60).toFixed(1) + 't';
     totalBar.style.display = 'flex';
   }
 
-  function startRediger(i) {
-    redigererIndex = i;
-    visTimer();
-    document.getElementById(`edit-panel-${i}`).scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
+  function startRediger(i) { redigererIndex = i; visTimer(); }
+  function avbrytRediger() { redigererIndex = null; visTimer(); }
 
   function lagreRediger(i) {
     const timer = parseFloat(document.getElementById('edit-timer').value);
@@ -507,11 +506,6 @@
     poster[i].kommentar  = document.getElementById('edit-kommentar').value.trim();
     redigererIndex = null;
     lagreDraft();
-    visTimer();
-  }
-
-  function avbrytRediger() {
-    redigererIndex = null;
     visTimer();
   }
 
@@ -548,11 +542,10 @@
         localStorage.removeItem('ms_draft_' + ukeNr);
         msg.style.color = 'var(--success)';
         msg.textContent = `✓ Uke ${ukeNr} er sendt inn! ${data.rows_written} poster lagret.`;
-        poster = [];
-        visTimer();
+        poster = []; visTimer();
       } else if (data.status === 'duplikat') {
         if (confirm(data.message)) {
-          await jsonpGet({
+          const data2 = await jsonpGet({
             action: 'submit_week',
             ansatt_id: ansattId,
             ansatt_navn: ansattNavn,
@@ -560,13 +553,14 @@
             uke_nr: ukeNr,
             aar,
             timer: JSON.stringify(poster),
-            overskrive: true
+            overskrive: 'true'
           });
-          localStorage.removeItem('ms_draft_' + ukeNr);
-          msg.style.color = 'var(--success)';
-          msg.textContent = `✓ Uke ${ukeNr} er oppdatert.`;
-          poster = [];
-          visTimer();
+          if (data2.status === 'ok') {
+            localStorage.removeItem('ms_draft_' + ukeNr);
+            msg.style.color = 'var(--success)';
+            msg.textContent = `✓ Uke ${ukeNr} er oppdatert.`;
+            poster = []; visTimer();
+          }
         }
         btn.disabled = false;
         btn.textContent = `Send inn uke ${ukeNr}`;
