@@ -256,23 +256,23 @@
   // ── Last ansatte fra Apps Script ──
   const select = document.getElementById('employee-select');
 
-  async function loadEmployees() {
-    try {
-      const res = await fetch(`${CONFIG.APPS_SCRIPT_URL}?action=getEmployees`);
-      const data = await res.json();
-      if (data.employees) {
-        data.employees.forEach(emp => {
-          const opt = document.createElement('option');
-          opt.value = emp.id;
-          opt.textContent = emp.navn;
-          select.appendChild(opt);
-        });
-      }
-    } catch (e) {
-      // Fallback: vis feilmelding
-      console.warn('Kunne ikke laste ansatte:', e);
+  function loadEmployees() {
+  const callbackName = 'handleEmployees_' + Date.now();
+  window[callbackName] = function(data) {
+    if (data.employees) {
+      data.employees.forEach(emp => {
+        const opt = document.createElement('option');
+        opt.value = emp.id;
+        opt.textContent = emp.navn;
+        select.appendChild(opt);
+      });
     }
-  }
+    delete window[callbackName];
+  };
+  const script = document.createElement('script');
+  script.src = `${CONFIG.APPS_SCRIPT_URL}?action=getEmployees&callback=${callbackName}`;
+  document.body.appendChild(script);
+}
   loadEmployees();
 
   // ── PIN-input logikk ──
