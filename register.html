@@ -17,103 +17,134 @@
     }
     body { font-family: 'Open Sans', sans-serif; background: var(--bg); min-height: 100vh; }
 
+    /* ── TOPBAR ── */
     .topbar { background: var(--teal-dark); color: #fff; padding: 0 1.5rem; height: 52px; display: flex; align-items: center; justify-content: space-between; }
     .topbar-logo { font-family: 'Ubuntu', sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .topbar-logo-mark { width: 28px; height: 28px; background: var(--teal); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
     .topbar-logo-mark svg { width: 16px; height: 16px; fill: #fff; }
     .topbar-right { display: flex; align-items: center; gap: 1rem; font-size: 13px; }
     .week-badge { background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 12px; }
-    .user-name { opacity: 0.85; }
     .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
     .btn-logout:hover { background: rgba(255,255,255,0.1); }
 
     .main { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem; }
-    .card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
-    .card-title { font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; color: var(--teal-dark); margin-bottom: 1rem; }
 
-    /* ── AKTIV TIMER CARD ── */
-    .aktiv-card { background: var(--teal-dark); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; color: #fff; }
-    .aktiv-card.idle { background: #fff; border: 1px solid var(--border); }
-    .aktiv-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
-    .aktiv-label { font-size: 12px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.8px; }
-    .aktiv-card.idle .aktiv-label { color: var(--text-muted); }
-    .aktiv-kunde-navn { font-family: 'Ubuntu', sans-serif; font-size: 22px; font-weight: 700; margin-top: 2px; }
-    .aktiv-card.idle .aktiv-kunde-navn { color: var(--text-muted); font-size: 16px; font-weight: 400; }
-    .timer-clock { font-family: 'Ubuntu', sans-serif; font-size: 48px; font-weight: 700; letter-spacing: 2px; line-height: 1; }
-    .aktiv-card.idle .timer-clock { color: var(--border); font-size: 36px; }
-    .aktiv-bottom { display: flex; align-items: center; gap: 10px; margin-top: 1.25rem; flex-wrap: wrap; }
-    .btn-start { background: #fff; color: var(--teal-dark); border: none; padding: 10px 28px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
-    .btn-start:hover { background: var(--teal-light); }
-    .btn-start:disabled { background: rgba(255,255,255,0.3); color: rgba(255,255,255,0.5); cursor: not-allowed; }
-    .aktiv-card.idle .btn-start { background: var(--teal); color: #fff; }
-    .btn-stop { background: var(--error); color: #fff; border: none; padding: 10px 28px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
-    .btn-bytt { background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3); padding: 10px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
-    .btn-bytt:hover { background: rgba(255,255,255,0.25); }
-    .btn-reset-sm { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); border: none; padding: 10px 12px; border-radius: 8px; font-size: 14px; cursor: pointer; }
-    .aktiv-card.idle .btn-bytt, .aktiv-card.idle .btn-reset-sm { display: none; }
+    /* ── TIMER BAR (Toggl-stil) ── */
+    .timer-bar { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+    .timer-bar.running { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(2,107,133,0.1); }
+    .timer-row { display: flex; align-items: center; gap: 10px; }
+    .timer-kommentar { flex: 1; border: none; outline: none; font-family: 'Open Sans', sans-serif; font-size: 15px; color: var(--text); background: transparent; min-width: 0; }
+    .timer-kommentar::placeholder { color: var(--text-muted); }
+    .timer-divider { width: 1px; height: 28px; background: var(--border); flex-shrink: 0; }
+    .timer-kunde-wrap { position: relative; flex-shrink: 0; }
+    .timer-kunde-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; font-family: 'Open Sans', sans-serif; font-size: 14px; color: var(--text-muted); cursor: pointer; padding: 4px 8px; border-radius: 6px; white-space: nowrap; }
+    .timer-kunde-btn.valgt { color: var(--teal-dark); font-weight: 500; }
+    .timer-kunde-btn:hover { background: var(--bg); }
+    .timer-clock-sm { font-family: 'Ubuntu', sans-serif; font-size: 18px; font-weight: 700; color: var(--teal-dark); min-width: 80px; text-align: center; flex-shrink: 0; }
+    .timer-clock-sm.running { color: var(--teal); }
+    .btn-start-round { width: 40px; height: 40px; border-radius: 50%; background: var(--teal); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, transform 0.1s; }
+    .btn-start-round:hover { background: var(--teal-dark); transform: scale(1.05); }
+    .btn-start-round svg { width: 16px; height: 16px; fill: #fff; }
+    .btn-stop-round { background: var(--error); }
+    .btn-stop-round:hover { background: #a93226; }
 
-    /* ── KUNDESØK MODAL-ISH ── */
-    .kunde-sok-panel { margin-bottom: 1rem; }
-    .search-wrap { position: relative; }
-    .search-wrap input { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Open Sans', sans-serif; font-size: 15px; color: var(--text); }
-    .search-wrap input:focus { outline: none; border-color: var(--teal); }
-    .search-results { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 100; max-height: 240px; overflow-y: auto; margin-top: 4px; }
-    .search-item { padding: 10px 14px; font-size: 14px; cursor: pointer; border-bottom: 1px solid var(--border); }
-    .search-item:last-child { border-bottom: none; }
-    .search-item:hover { background: var(--teal-light); }
-    .search-item-name { font-weight: 500; color: var(--text); }
-    .search-item-domain { font-size: 12px; color: var(--text-muted); }
+    /* ── KUNDE DROPDOWN ── */
+    .kunde-dropdown { position: absolute; top: calc(100% + 6px); right: 0; background: #fff; border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 200; width: 280px; padding: 8px; }
+    .kunde-dropdown input { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 6px; }
+    .kunde-dropdown input:focus { border-color: var(--teal); }
+    .kunde-resultater { max-height: 200px; overflow-y: auto; }
+    .kunde-item { padding: 8px 10px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+    .kunde-item:hover { background: var(--teal-light); }
+    .kunde-item-navn { font-weight: 500; color: var(--text); }
+    .kunde-item-domain { font-size: 12px; color: var(--text-muted); }
+    .snarveier-wrap { border-top: 1px solid var(--border); margin-top: 6px; padding-top: 6px; }
+    .snarveier-label { font-size: 11px; color: var(--text-muted); padding: 0 6px 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .snarvei-item { padding: 7px 10px; border-radius: 6px; cursor: pointer; font-size: 13px; color: var(--teal-dark); }
+    .snarvei-item:hover { background: var(--teal-light); }
 
-    /* ── SNARVEIER ── */
-    .snarveier { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 0.75rem; }
-    .snarvei-label { font-size: 12px; color: var(--text-muted); width: 100%; }
-    .snarvei-btn { background: var(--teal-light); color: var(--teal-dark); border: 1px solid var(--teal); border-radius: 20px; padding: 5px 14px; font-size: 13px; cursor: pointer; white-space: nowrap; }
-    .snarvei-btn:hover { background: var(--teal); color: #fff; }
+    /* ── LAGRE PANEL (vises etter stopp) ── */
+    .lagre-panel { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 10px; padding: 1rem 1.25rem; margin-top: 0.75rem; }
+    .lagre-panel-title { font-size: 13px; font-weight: 500; color: var(--teal-dark); margin-bottom: 0.75rem; }
+    .lagre-row { display: grid; grid-template-columns: 1fr 120px; gap: 10px; margin-bottom: 0.75rem; }
+    .lagre-group { display: flex; flex-direction: column; gap: 4px; }
+    .lagre-group label { font-size: 12px; color: var(--teal-dark); }
+    .lagre-group input, .lagre-group textarea { padding: 8px 10px; border: 1px solid rgba(2,107,133,0.3); border-radius: 7px; font-family: 'Open Sans', sans-serif; font-size: 14px; background: #fff; }
+    .lagre-group input:focus, .lagre-group textarea:focus { outline: none; border-color: var(--teal); }
+    .lagre-group textarea { resize: none; height: 60px; }
+    .lagre-btns { display: flex; gap: 8px; }
+    .btn-lagre { background: var(--teal); color: #fff; border: none; padding: 9px 22px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; }
+    .btn-lagre:hover { background: var(--teal-dark); }
+    .btn-forkast { background: #fff; color: var(--text-muted); border: 1px solid var(--border); padding: 9px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
 
-    /* ── MANUELL FORM ── */
-    .selected-customer { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 8px; padding: 8px 12px; font-size: 14px; color: var(--teal-dark); display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-    .selected-customer button { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 18px; }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .form-group { display: flex; flex-direction: column; gap: 4px; margin-bottom: 0.75rem; }
+    /* ── MANUELL (kollapsbar) ── */
+    .manuell-toggle { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--text-muted); font-family: 'Open Sans', sans-serif; font-size: 14px; cursor: pointer; padding: 0.5rem 0; margin-bottom: 0.5rem; }
+    .manuell-toggle:hover { color: var(--teal); }
+    .manuell-toggle .plus { width: 22px; height: 22px; background: var(--teal-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: var(--teal); }
+    .manuell-panel { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1rem; display: none; }
+    .manuell-panel.open { display: block; }
+    .manuell-kunde-wrap { margin-bottom: 0.75rem; }
+    .manuell-sok { position: relative; }
+    .manuell-sok input { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; }
+    .manuell-sok input:focus { border-color: var(--teal); }
+    .manuell-resultater { position: absolute; top: 100%; left: 0; right: 0; background: #fff; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); z-index: 100; max-height: 200px; overflow-y: auto; margin-top: 3px; }
+    .manuell-valgt { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 8px; padding: 8px 12px; font-size: 14px; color: var(--teal-dark); display: flex; justify-content: space-between; align-items: center; }
+    .manuell-valgt button { background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 16px; }
+    .form-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.75rem; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
     .form-group label { font-size: 12px; color: var(--text-muted); }
-    .form-group input, .form-group textarea { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-family: 'Open Sans', sans-serif; font-size: 14px; color: var(--text); }
+    .form-group input, .form-group textarea { padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Open Sans', sans-serif; }
     .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--teal); }
-    .form-group textarea { resize: vertical; min-height: 60px; }
-    .form-full { grid-column: 1 / -1; }
-    .btn-add { width: 100%; padding: 11px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; cursor: pointer; }
-    .btn-add:hover { background: #005a3c; }
+    .form-group textarea { resize: vertical; min-height: 56px; }
+    .btn-add-manuell { width: 100%; padding: 10px; background: var(--success); color: #fff; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; margin-top: 0.25rem; }
+    .btn-add-manuell:hover { background: #005a3c; }
 
     /* ── TIMELISTE ── */
-    .time-entries { display: flex; flex-direction: column; gap: 8px; }
-    .entry-item { background: var(--bg); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between; font-size: 14px; border: 1px solid transparent; }
-    .entry-item.editing { border-color: var(--teal); background: var(--teal-light); }
-    .entry-left { display: flex; flex-direction: column; gap: 2px; flex: 1; }
-    .entry-kunde { font-weight: 500; color: var(--text); }
-    .entry-meta { font-size: 12px; color: var(--text-muted); }
-    .entry-right { display: flex; align-items: center; gap: 8px; }
-    .entry-tid { font-family: 'Ubuntu', sans-serif; font-weight: 500; color: var(--teal-dark); min-width: 36px; text-align: right; }
-    .btn-edit { background: none; border: 1px solid var(--border); color: var(--text-muted); cursor: pointer; font-size: 13px; padding: 3px 8px; border-radius: 6px; }
-    .btn-edit:hover { border-color: var(--teal); color: var(--teal); }
-    .btn-delete { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; }
-    .btn-delete:hover { color: var(--error); }
-    .edit-panel { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 10px; padding: 1rem; margin-top: 4px; }
-    .edit-panel-title { font-size: 13px; font-weight: 500; color: var(--teal-dark); margin-bottom: 0.75rem; }
-    .edit-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 0.75rem; }
-    .edit-btns { display: flex; gap: 8px; }
-    .btn-save { background: var(--teal); color: #fff; border: none; padding: 8px 20px; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 14px; cursor: pointer; }
-    .btn-cancel-edit { background: #fff; color: var(--text-muted); border: 1px solid var(--border); padding: 8px 16px; border-radius: 8px; font-size: 14px; cursor: pointer; }
+    .card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; color: var(--teal-dark); margin-bottom: 1rem; }
+    .time-entries { display: flex; flex-direction: column; gap: 6px; }
+    .entry-item { background: var(--bg); border-radius: 8px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; font-size: 14px; border: 1px solid transparent; cursor: pointer; transition: border-color 0.15s; }
+    .entry-item:hover { border-color: var(--border); }
+    .entry-item.editing { border-color: var(--teal); background: var(--teal-light); cursor: default; }
+    .entry-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+    .entry-left { flex: 1; min-width: 0; }
+    .entry-kunde { font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .entry-kommentar { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .entry-kommentar.mangler { color: var(--error); font-style: italic; }
+    .entry-tid { font-family: 'Ubuntu', sans-serif; font-weight: 500; color: var(--teal-dark); flex-shrink: 0; }
+    .entry-dato { font-size: 12px; color: var(--text-muted); flex-shrink: 0; }
+    .btn-slett { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 15px; flex-shrink: 0; padding: 2px 4px; }
+    .btn-slett:hover { color: var(--error); }
+
+    .entry-edit-panel { background: var(--teal-light); border: 1px solid var(--teal); border-radius: 8px; padding: 0.75rem 1rem; margin-top: 4px; }
+    .entry-edit-row { display: grid; grid-template-columns: 1fr 120px 1fr; gap: 8px; margin-bottom: 8px; }
+    .entry-edit-group { display: flex; flex-direction: column; gap: 3px; }
+    .entry-edit-group label { font-size: 11px; color: var(--teal-dark); text-transform: uppercase; letter-spacing: 0.4px; }
+    .entry-edit-group input, .entry-edit-group textarea { padding: 7px 10px; border: 1px solid rgba(2,107,133,0.3); border-radius: 6px; font-size: 13px; font-family: 'Open Sans', sans-serif; background: #fff; }
+    .entry-edit-group input:focus, .entry-edit-group textarea:focus { outline: none; border-color: var(--teal); }
+    .entry-edit-group textarea { resize: none; height: 52px; }
+    .entry-edit-btns { display: flex; gap: 6px; }
+    .btn-lagre-post { background: var(--teal); color: #fff; border: none; padding: 7px 18px; border-radius: 7px; font-size: 13px; cursor: pointer; }
+    .btn-avbryt-post { background: #fff; color: var(--text-muted); border: 1px solid var(--border); padding: 7px 14px; border-radius: 7px; font-size: 13px; cursor: pointer; }
+
     .total-bar { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--teal-light); border-radius: 8px; margin-top: 8px; }
     .total-label { font-size: 13px; color: var(--teal-dark); }
     .total-tid { font-family: 'Ubuntu', sans-serif; font-size: 18px; font-weight: 700; color: var(--teal-dark); }
     .empty-state { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 14px; }
 
+    /* ── SEND INN ── */
     .btn-submit { width: 100%; padding: 14px; background: var(--teal); color: #fff; border: none; border-radius: 8px; font-family: 'Ubuntu', sans-serif; font-size: 16px; font-weight: 500; cursor: pointer; margin-top: 0.5rem; }
     .btn-submit:hover { background: var(--teal-dark); }
     .btn-submit:disabled { background: var(--border); cursor: not-allowed; }
     .status-msg { text-align: center; font-size: 14px; margin-top: 0.5rem; min-height: 20px; }
+
+    /* ── OVERLAY (blokkerer interaksjon ved ulagret post) ── */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(1,62,82,0.3); z-index: 50; }
+    .overlay.active { display: block; }
   </style>
 </head>
 <body>
+
+<div class="overlay" id="overlay"></div>
 
 <div class="topbar">
   <div class="topbar-logo">
@@ -124,72 +155,99 @@
   </div>
   <div class="topbar-right">
     <span class="week-badge" id="week-badge">Uke –</span>
-    <span class="user-name" id="user-name"></span>
+    <span style="opacity:0.85;font-size:13px" id="user-name"></span>
     <button class="btn-logout" onclick="loggUt()">Logg ut</button>
   </div>
 </div>
 
 <div class="main">
 
-  <!-- AKTIV TIMER -->
-  <div class="aktiv-card idle" id="aktiv-card">
-    <div class="aktiv-top">
-      <div>
-        <div class="aktiv-label">Jobber med</div>
-        <div class="aktiv-kunde-navn" id="aktiv-kunde-navn">Ingen kunde valgt</div>
+  <!-- TIMER BAR -->
+  <div class="timer-bar" id="timer-bar">
+    <div class="timer-row">
+      <input class="timer-kommentar" id="timer-kommentar" type="text" placeholder="Hva jobber du med?">
+      <div class="timer-divider"></div>
+      <div class="timer-kunde-wrap">
+        <button class="timer-kunde-btn" id="timer-kunde-btn" onclick="toggleKundeDropdown()">
+          <span id="timer-kunde-tekst">+ Velg kunde</span>
+        </button>
+        <div class="kunde-dropdown" id="kunde-dropdown" style="display:none">
+          <input type="text" id="kunde-dropdown-sok" placeholder="Søk kunde..." autocomplete="off">
+          <div class="kunde-resultater" id="kunde-resultater"></div>
+          <div class="snarveier-wrap" id="snarveier-wrap" style="display:none">
+            <div class="snarveier-label">Nylig brukt</div>
+            <div id="snarveier-liste"></div>
+          </div>
+        </div>
       </div>
-      <div class="timer-clock" id="timer-clock">00:00:00</div>
+      <div class="timer-divider"></div>
+      <div class="timer-clock-sm" id="timer-clock">00:00</div>
+      <button class="btn-start-round" id="btn-timer" onclick="toggleTimer()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
     </div>
-    <div class="aktiv-bottom">
-      <button class="btn-start" id="btn-start" onclick="startTimer()" disabled>Start</button>
-      <button class="btn-stop" id="btn-stop" onclick="stoppOgLagre()" style="display:none">Stopp og lagre</button>
-      <button class="btn-bytt" onclick="visSokPanel()">Bytt kunde</button>
-      <button class="btn-reset-sm" onclick="resetTimer()">↺ Nullstill</button>
+
+    <!-- LAGRE PANEL (vises etter stopp) -->
+    <div class="lagre-panel" id="lagre-panel" style="display:none">
+      <div class="lagre-panel-title">Lagre timepost</div>
+      <div class="lagre-row">
+        <div class="lagre-group" style="grid-column:1/-1">
+          <label>Kunde</label>
+          <input type="text" id="lagre-kunde-navn" readonly style="background:var(--teal-light);color:var(--teal-dark)">
+        </div>
+      </div>
+      <div class="lagre-row">
+        <div class="lagre-group">
+          <label>Kommentar *</label>
+          <textarea id="lagre-kommentar" placeholder="Hva ble gjort?"></textarea>
+        </div>
+        <div class="lagre-group">
+          <label>Timer</label>
+          <input type="number" id="lagre-timer" min="0" max="24" step="0.25">
+        </div>
+      </div>
+      <div class="lagre-group" style="margin-bottom:0.75rem">
+        <label>Dato</label>
+        <input type="date" id="lagre-dato">
+      </div>
+      <div class="lagre-btns">
+        <button class="btn-lagre" onclick="lagrePost()">Lagre</button>
+        <button class="btn-forkast" onclick="forkastPost()">Forkast</button>
+      </div>
     </div>
   </div>
 
-  <!-- KUNDESØK PANEL -->
-  <div class="card kunde-sok-panel" id="kunde-sok-panel">
-    <div class="card-title">🔍 Velg kunde</div>
-    <div class="search-wrap">
-      <input type="text" id="kunde-sok" placeholder="Søk etter kunde..." autocomplete="off">
-      <div class="search-results" id="search-results" style="display:none"></div>
-    </div>
-    <div class="snarveier" id="snarveier" style="display:none">
-      <span class="snarvei-label">Nylig brukt</span>
-    </div>
-  </div>
-
-  <!-- LEGG TIL MANUELT -->
-  <div class="card">
-    <div class="card-title">➕ Legg til manuelt</div>
-    <div id="manuell-kunde-sok-wrap">
-      <div class="search-wrap">
-        <input type="text" id="manuell-kunde-sok" placeholder="Søk etter kunde..." autocomplete="off">
-        <div class="search-results" id="manuell-search-results" style="display:none"></div>
+  <!-- MANUELL (kollapsbar) -->
+  <button class="manuell-toggle" onclick="toggleManuell()">
+    <span class="plus">+</span>
+    Legg til manuelt
+  </button>
+  <div class="manuell-panel" id="manuell-panel">
+    <div class="manuell-kunde-wrap">
+      <div class="manuell-sok" id="manuell-sok-wrap">
+        <input type="text" id="manuell-sok" placeholder="Søk etter kunde..." autocomplete="off">
+        <div class="manuell-resultater" id="manuell-resultater" style="display:none"></div>
       </div>
-    </div>
-    <div id="manuell-valgt-wrap" style="display:none">
-      <div class="selected-customer">
-        <strong id="manuell-valgt-navn"></strong>
+      <div class="manuell-valgt" id="manuell-valgt" style="display:none">
+        <span id="manuell-valgt-navn"></span>
         <button onclick="fjernManuellKunde()">✕</button>
       </div>
     </div>
-    <div class="form-row">
+    <div class="form-2col">
       <div class="form-group">
         <label>Dato</label>
-        <input type="date" id="dato-input">
+        <input type="date" id="manuell-dato">
       </div>
       <div class="form-group">
-        <label>Timer brukt</label>
-        <input type="number" id="timer-input" min="0" max="24" step="0.25" placeholder="f.eks. 1.5">
+        <label>Timer</label>
+        <input type="number" id="manuell-timer" min="0" max="24" step="0.25" placeholder="f.eks. 1.5">
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" style="margin-bottom:0.75rem">
       <label>Kommentar</label>
-      <textarea id="kommentar-input" placeholder="Hva ble gjort?"></textarea>
+      <textarea id="manuell-kommentar" placeholder="Hva ble gjort?"></textarea>
     </div>
-    <button class="btn-add" onclick="leggTilPost()">Legg til</button>
+    <button class="btn-add-manuell" onclick="leggTilManuell()">Legg til</button>
   </div>
 
   <!-- TIMELISTE -->
@@ -215,28 +273,28 @@
   const ansattNavn = localStorage.getItem('ms_employee_name');
   if (!ansattId) window.location.href = 'index.html';
 
-  // ── Uke ──
   function getWeekNumber(d) {
     d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
     d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
-    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+    return Math.ceil((((d - new Date(Date.UTC(d.getUTCFullYear(),0,1))) / 86400000) + 1) / 7);
   }
   const now   = new Date();
   const ukeNr = getWeekNumber(now);
   const aar   = now.getFullYear();
+  const dagensDate = now.toISOString().split('T')[0];
+
   document.getElementById('week-badge').textContent = `Uke ${ukeNr} · ${aar}`;
   document.getElementById('user-name').textContent  = ansattNavn;
   document.getElementById('submit-uke').textContent = ukeNr;
-  document.getElementById('dato-input').value = now.toISOString().split('T')[0];
+  document.getElementById('manuell-dato').value     = dagensDate;
 
   // ── JSONP ──
   function jsonpGet(params) {
     return new Promise((resolve, reject) => {
-      const cbName = 'cb_' + Date.now();
-      const url = CONFIG.APPS_SCRIPT_URL + '?' + Object.entries({...params, callback: cbName})
-        .map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
-      window[cbName] = data => { delete window[cbName]; resolve(data); };
+      const cb = 'cb_' + Date.now();
+      const url = CONFIG.APPS_SCRIPT_URL + '?' +
+        Object.entries({...params, callback: cb}).map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+      window[cb] = data => { delete window[cb]; resolve(data); };
       const s = document.createElement('script');
       s.src = url; s.onerror = () => reject(new Error('JSONP feilet'));
       document.body.appendChild(s);
@@ -244,195 +302,225 @@
   }
 
   // ── Nylig brukte kunder ──
-  let nyligBrukte = JSON.parse(localStorage.getItem('ms_nylig_kunder') || '[]');
-
-  function lagreNyligBrukt(kunde) {
+  let nyligBrukte = JSON.parse(localStorage.getItem('ms_nylig') || '[]');
+  function lagreNylig(kunde) {
     nyligBrukte = [kunde, ...nyligBrukte.filter(k => k.id !== kunde.id)].slice(0, 5);
-    localStorage.setItem('ms_nylig_kunder', JSON.stringify(nyligBrukte));
+    localStorage.setItem('ms_nylig', JSON.stringify(nyligBrukte));
     oppdaterSnarveier();
   }
-
   function oppdaterSnarveier() {
-    const el = document.getElementById('snarveier');
-    if (!nyligBrukte.length) { el.style.display = 'none'; return; }
-    el.style.display = 'flex';
-    el.innerHTML = '<span class="snarvei-label">Nylig brukt</span>' +
-      nyligBrukte.map(k => `<button class="snarvei-btn" onclick='velgAktivKunde(${JSON.stringify(k)})'>${k.name}</button>`).join('');
+    const wrap = document.getElementById('snarveier-wrap');
+    const liste = document.getElementById('snarveier-liste');
+    if (!nyligBrukte.length) { wrap.style.display = 'none'; return; }
+    wrap.style.display = 'block';
+    liste.innerHTML = nyligBrukte.map(k =>
+      `<div class="snarvei-item" onclick='velgKunde(${JSON.stringify(k)})'>${k.name}</div>`
+    ).join('');
   }
   oppdaterSnarveier();
 
   // ── HubSpot-søk ──
   const hsCache = {};
-  let debounceTimers = {};
+  let sokTimer = null;
+  let aktivSokInput = null;
 
-  function lagSok(inputId, resultatId, velgFn) {
-    const input   = document.getElementById(inputId);
-    const resultat = document.getElementById(resultatId);
-    input.addEventListener('input', e => {
-      clearTimeout(debounceTimers[inputId]);
-      const q = e.target.value.trim();
-      if (q.length < 2) { resultat.style.display = 'none'; return; }
-      debounceTimers[inputId] = setTimeout(() => sokHubSpot(q, resultat, velgFn), 300);
-    });
-    document.addEventListener('click', e => {
-      if (!e.target.closest('#' + inputId) && !e.target.closest('#' + resultatId)) {
-        resultat.style.display = 'none';
+  function sokHubSpot(q, resultatEl, velgFn) {
+    clearTimeout(sokTimer);
+    if (q.length < 2) { resultatEl.style.display = 'none'; return; }
+    sokTimer = setTimeout(async () => {
+      if (hsCache[q]) { visResultater(hsCache[q], resultatEl, velgFn); return; }
+      if (!CONFIG.HUBSPOT_TOKEN || CONFIG.HUBSPOT_TOKEN.startsWith('FYLL')) {
+        const demo = [
+          { id: 'demo-1', name: 'Demo Kunde AS', domain: 'demokunde.no' },
+          { id: 'demo-2', name: 'Test Bedrift AS', domain: 'test.no' },
+          { id: 'demo-3', name: 'Eksempel Firma AS', domain: 'eksempel.no' }
+        ];
+        hsCache[q] = demo; visResultater(demo, resultatEl, velgFn); return;
       }
-    });
-  }
-
-  async function sokHubSpot(q, resultatEl, velgFn) {
-    if (hsCache[q]) { visResultater(hsCache[q], resultatEl, velgFn); return; }
-    if (!CONFIG.HUBSPOT_TOKEN || CONFIG.HUBSPOT_TOKEN.startsWith('FYLL')) {
-      const demo = [
-        { id: 'demo-1', name: 'Demo Kunde AS', domain: 'demokunde.no' },
-        { id: 'demo-2', name: 'Test Bedrift AS', domain: 'test.no' },
-        { id: 'demo-3', name: 'Eksempel Firma AS', domain: 'eksempel.no' }
-      ];
-      hsCache[q] = demo; visResultater(demo, resultatEl, velgFn); return;
-    }
-    try {
-      const res = await fetch('https://api.hubapi.com/crm/v3/objects/companies/search', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${CONFIG.HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query: q, properties: ['name','domain'], limit: 8 })
-      });
-      const data = await res.json();
-      const results = (data.results||[]).map(r => ({ id: r.id, name: r.properties.name, domain: r.properties.domain||'' }));
-      hsCache[q] = results;
-      visResultater(results, resultatEl, velgFn);
-    } catch(e) { console.warn('HubSpot feilet:', e); }
+      try {
+        const res = await fetch('https://api.hubapi.com/crm/v3/objects/companies/search', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${CONFIG.HUBSPOT_TOKEN}`, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: q, properties: ['name','domain'], limit: 8 })
+        });
+        const data = await res.json();
+        const results = (data.results||[]).map(r => ({ id: r.id, name: r.properties.name, domain: r.properties.domain||'' }));
+        hsCache[q] = results; visResultater(results, resultatEl, velgFn);
+      } catch(e) { console.warn('HubSpot feilet'); }
+    }, 300);
   }
 
   function visResultater(results, el, velgFn) {
     if (!results.length) { el.style.display = 'none'; return; }
     el.innerHTML = results.map(r => `
-      <div class="search-item" onclick='${velgFn}(${JSON.stringify(r)})'>
-        <div class="search-item-name">${r.name}</div>
-        <div class="search-item-domain">${r.domain}</div>
+      <div class="kunde-item" onclick='${velgFn}(${JSON.stringify(r)})'>
+        <div class="kunde-item-navn">${r.name}</div>
+        <div class="kunde-item-domain">${r.domain}</div>
       </div>`).join('');
     el.style.display = 'block';
   }
 
-  lagSok('kunde-sok', 'search-results', 'velgAktivKunde');
-  lagSok('manuell-kunde-sok', 'manuell-search-results', 'velgManuellKunde');
-
-  // ── AKTIV TIMER ──
+  // ── TIMER MED KUNDE ──
   let aktivKunde   = null;
+  let timerRunning = false;
+  let sekunder     = 0;
   let timerInterval = null;
-  let sekunder      = 0;
-  let timerRunning  = false;
+  let ventePaLagring = false;
 
-  function velgAktivKunde(kunde) {
-    if (timerRunning) {
-      if (confirm(`Bytt fra "${aktivKunde.name}"?\nTid (${formatTid(sekunder)}) lagres automatisk.`)) {
-        lagreTimerSomPost();
-      } else return;
+  // Kunde-dropdown
+  document.getElementById('kunde-dropdown-sok').addEventListener('input', e => {
+    sokHubSpot(e.target.value.trim(), document.getElementById('kunde-resultater'), 'velgKunde');
+  });
+
+  function toggleKundeDropdown() {
+    if (ventePaLagring) return;
+    const dd = document.getElementById('kunde-dropdown');
+    const open = dd.style.display === 'block';
+    dd.style.display = open ? 'none' : 'block';
+    if (!open) setTimeout(() => document.getElementById('kunde-dropdown-sok').focus(), 50);
+  }
+
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.timer-kunde-wrap')) {
+      document.getElementById('kunde-dropdown').style.display = 'none';
     }
+    if (!e.target.closest('.manuell-sok')) {
+      document.getElementById('manuell-resultater').style.display = 'none';
+    }
+  });
+
+  function velgKunde(kunde) {
     aktivKunde = kunde;
-    lagreNyligBrukt(kunde);
-    document.getElementById('aktiv-kunde-navn').textContent = kunde.name;
-    document.getElementById('aktiv-card').classList.remove('idle');
-    document.getElementById('btn-start').disabled = false;
-    document.getElementById('kunde-sok').value = '';
-    document.getElementById('search-results').style.display = 'none';
-  }
-
-  function visSokPanel() {
-    document.getElementById('kunde-sok').focus();
-  }
-
-  function startTimer() {
-    if (!aktivKunde) return;
-    timerRunning = true;
-    document.getElementById('btn-start').style.display = 'none';
-    document.getElementById('btn-stop').style.display = 'inline-block';
-    timerInterval = setInterval(() => {
-      sekunder++;
-      document.getElementById('timer-clock').textContent = formatTid(sekunder);
-    }, 1000);
-  }
-
-  function stoppOgLagre() {
-    clearInterval(timerInterval);
-    timerRunning = false;
-    document.getElementById('btn-start').style.display = 'inline-block';
-    document.getElementById('btn-stop').style.display = 'none';
-    // Fyll manuell form
-    document.getElementById('timer-input').value = (sekunder / 3600).toFixed(2);
-    if (aktivKunde) velgManuellKunde(aktivKunde);
-    resetTimer();
-  }
-
-  function lagreTimerSomPost() {
-    if (sekunder < 30) { resetTimer(); return; }
-    poster.push({
-      dato: now.toISOString().split('T')[0],
-      hubspot_id: aktivKunde.id,
-      kunde_navn: aktivKunde.name,
-      minutter: Math.round(sekunder / 60),
-      kommentar: '',
-      kilde: 'timer'
-    });
-    lagreDraft();
-    visTimer();
-    resetTimer();
-  }
-
-  function resetTimer() {
-    clearInterval(timerInterval);
-    timerRunning = false;
-    sekunder = 0;
-    document.getElementById('timer-clock').textContent = '00:00:00';
-    document.getElementById('btn-start').style.display = 'inline-block';
-    document.getElementById('btn-stop').style.display = 'none';
+    lagreNylig(kunde);
+    document.getElementById('timer-kunde-tekst').textContent = kunde.name;
+    document.getElementById('timer-kunde-btn').classList.add('valgt');
+    document.getElementById('kunde-dropdown').style.display = 'none';
+    document.getElementById('kunde-dropdown-sok').value = '';
+    document.getElementById('kunde-resultater').innerHTML = '';
   }
 
   function formatTid(sek) {
     const h = Math.floor(sek / 3600);
     const m = Math.floor((sek % 3600) / 60);
     const s = sek % 60;
-    return [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
+    if (h > 0) return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
   }
 
-  // ── MANUELL REGISTRERING ──
+  function toggleTimer() {
+    if (ventePaLagring) return;
+    if (timerRunning) {
+      // STOPP
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('btn-timer').innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+      document.getElementById('btn-timer').classList.remove('btn-stop-round');
+      document.getElementById('timer-bar').classList.remove('running');
+      // Vis lagre-panel
+      ventePaLagring = true;
+      document.getElementById('overlay').classList.add('active');
+      document.getElementById('lagre-panel').style.display = 'block';
+      document.getElementById('lagre-kunde-navn').value = aktivKunde ? aktivKunde.name : '–';
+      document.getElementById('lagre-kommentar').value = document.getElementById('timer-kommentar').value.trim();
+      document.getElementById('lagre-timer').value = (sekunder / 3600).toFixed(2);
+      document.getElementById('lagre-dato').value = dagensDate;
+      setTimeout(() => document.getElementById('lagre-kommentar').focus(), 50);
+    } else {
+      // START
+      timerRunning = true;
+      document.getElementById('btn-timer').innerHTML = '<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>';
+      document.getElementById('btn-timer').classList.add('btn-stop-round');
+      document.getElementById('timer-bar').classList.add('running');
+      timerInterval = setInterval(() => {
+        sekunder++;
+        document.getElementById('timer-clock').textContent = formatTid(sekunder);
+        document.getElementById('timer-clock').classList.add('running');
+      }, 1000);
+    }
+  }
+
+  function lagrePost() {
+    const timerVal = parseFloat(document.getElementById('lagre-timer').value);
+    if (!timerVal || timerVal <= 0) { alert('Angi gyldig tid.'); return; }
+    poster.push({
+      dato: document.getElementById('lagre-dato').value || dagensDate,
+      hubspot_id: aktivKunde ? aktivKunde.id : 'ukjent',
+      kunde_navn: aktivKunde ? aktivKunde.name : document.getElementById('lagre-kunde-navn').value,
+      minutter: Math.round(timerVal * 60),
+      kommentar: document.getElementById('lagre-kommentar').value.trim(),
+      kilde: 'timer'
+    });
+    lagreDraft();
+    visTimer();
+    lukkLagrePanel();
+  }
+
+  function forkastPost() {
+    lukkLagrePanel();
+  }
+
+  function lukkLagrePanel() {
+    ventePaLagring = false;
+    sekunder = 0;
+    document.getElementById('timer-clock').textContent = '00:00';
+    document.getElementById('timer-clock').classList.remove('running');
+    document.getElementById('timer-kommentar').value = '';
+    document.getElementById('timer-kunde-tekst').textContent = '+ Velg kunde';
+    document.getElementById('timer-kunde-btn').classList.remove('valgt');
+    aktivKunde = null;
+    document.getElementById('lagre-panel').style.display = 'none';
+    document.getElementById('overlay').classList.remove('active');
+  }
+
+  // ── MANUELL ──
+  let manuellPanelOpen = false;
   let manuellKunde = null;
+
+  function toggleManuell() {
+    if (ventePaLagring) return;
+    manuellPanelOpen = !manuellPanelOpen;
+    document.getElementById('manuell-panel').classList.toggle('open', manuellPanelOpen);
+  }
+
+  document.getElementById('manuell-sok').addEventListener('input', e => {
+    sokHubSpot(e.target.value.trim(), document.getElementById('manuell-resultater'), 'velgManuellKunde');
+  });
 
   function velgManuellKunde(kunde) {
     manuellKunde = kunde;
-    document.getElementById('manuell-kunde-sok-wrap').style.display = 'none';
-    document.getElementById('manuell-valgt-wrap').style.display = 'block';
+    lagreNylig(kunde);
+    document.getElementById('manuell-sok-wrap').style.display = 'none';
+    document.getElementById('manuell-valgt').style.display = 'flex';
     document.getElementById('manuell-valgt-navn').textContent = kunde.name;
-    document.getElementById('manuell-search-results').style.display = 'none';
-    document.getElementById('manuell-kunde-sok').value = '';
-    lagreNyligBrukt(kunde);
+    document.getElementById('manuell-resultater').style.display = 'none';
   }
 
   function fjernManuellKunde() {
     manuellKunde = null;
-    document.getElementById('manuell-kunde-sok-wrap').style.display = 'block';
-    document.getElementById('manuell-valgt-wrap').style.display = 'none';
+    document.getElementById('manuell-sok-wrap').style.display = 'block';
+    document.getElementById('manuell-valgt').style.display = 'none';
+    document.getElementById('manuell-sok').value = '';
   }
 
-  function leggTilPost() {
+  function leggTilManuell() {
     if (!manuellKunde) { alert('Velg en kunde først.'); return; }
-    const timerVal = parseFloat(document.getElementById('timer-input').value);
+    const timerVal = parseFloat(document.getElementById('manuell-timer').value);
     if (!timerVal || timerVal <= 0) { alert('Angi antall timer.'); return; }
-    const dato = document.getElementById('dato-input').value;
-    if (!dato) { alert('Velg dato.'); return; }
     poster.push({
-      dato,
+      dato: document.getElementById('manuell-dato').value || dagensDate,
       hubspot_id: manuellKunde.id,
       kunde_navn: manuellKunde.name,
       minutter: Math.round(timerVal * 60),
-      kommentar: document.getElementById('kommentar-input').value.trim(),
+      kommentar: document.getElementById('manuell-kommentar').value.trim(),
       kilde: 'manuell'
     });
     lagreDraft();
     visTimer();
     fjernManuellKunde();
-    document.getElementById('timer-input').value = '';
-    document.getElementById('kommentar-input').value = '';
+    document.getElementById('manuell-timer').value = '';
+    document.getElementById('manuell-kommentar').value = '';
+    document.getElementById('manuell-panel').classList.remove('open');
+    manuellPanelOpen = false;
   }
 
   // ── TIMELISTE ──
@@ -451,41 +539,39 @@
       totalBar.style.display = 'none'; return;
     }
     el.innerHTML = poster.map((p, i) => `
-      <div class="entry-item ${redigererIndex === i ? 'editing' : ''}" id="entry-${i}">
+      <div class="entry-item ${redigererIndex === i ? 'editing' : ''}" onclick="startRediger(${i})">
+        <div class="entry-dot"></div>
         <div class="entry-left">
           <div class="entry-kunde">${p.kunde_navn}</div>
-          <div class="entry-meta">${p.dato} · ${p.kommentar || '–'} · <em>${p.kilde}</em></div>
+          <div class="entry-kommentar ${!p.kommentar ? 'mangler' : ''}">${p.kommentar || 'Mangler kommentar'}</div>
         </div>
-        <div class="entry-right">
-          <span class="entry-tid">${(p.minutter/60).toFixed(1)}t</span>
-          <button class="btn-edit" onclick="startRediger(${i})">✏️</button>
-          <button class="btn-delete" onclick="slettPost(${i})">🗑</button>
-        </div>
+        <div class="entry-dato">${p.dato}</div>
+        <div class="entry-tid">${(p.minutter/60).toFixed(1)}t</div>
+        <button class="btn-slett" onclick="event.stopPropagation();slettPost(${i})">🗑</button>
       </div>
       ${redigererIndex === i ? `
-      <div class="edit-panel">
-        <div class="edit-panel-title">Rediger post</div>
-        <div class="edit-form-row">
-          <div class="form-group">
+      <div class="entry-edit-panel">
+        <div class="entry-edit-row">
+          <div class="entry-edit-group">
             <label>Kunde</label>
-            <input type="text" id="edit-kunde-navn" value="${p.kunde_navn}">
+            <input type="text" id="edit-kunde" value="${p.kunde_navn}">
           </div>
-          <div class="form-group">
-            <label>Dato</label>
-            <input type="date" id="edit-dato" value="${p.dato}">
-          </div>
-          <div class="form-group">
+          <div class="entry-edit-group">
             <label>Timer</label>
             <input type="number" id="edit-timer" value="${(p.minutter/60).toFixed(2)}" min="0" max="24" step="0.25">
           </div>
-          <div class="form-group">
-            <label>Kommentar</label>
-            <input type="text" id="edit-kommentar" value="${p.kommentar || ''}">
+          <div class="entry-edit-group">
+            <label>Dato</label>
+            <input type="date" id="edit-dato" value="${p.dato}">
           </div>
         </div>
-        <div class="edit-btns">
-          <button class="btn-save" onclick="lagreRediger(${i})">Lagre</button>
-          <button class="btn-cancel-edit" onclick="avbrytRediger()">Avbryt</button>
+        <div class="entry-edit-group" style="margin-bottom:8px">
+          <label>Kommentar</label>
+          <textarea id="edit-kommentar">${p.kommentar || ''}</textarea>
+        </div>
+        <div class="entry-edit-btns">
+          <button class="btn-lagre-post" onclick="event.stopPropagation();lagreRediger(${i})">Lagre</button>
+          <button class="btn-avbryt-post" onclick="event.stopPropagation();avbrytRediger()">Avbryt</button>
         </div>
       </div>` : ''}`).join('');
 
@@ -494,20 +580,25 @@
     totalBar.style.display = 'flex';
   }
 
-  function startRediger(i) { redigererIndex = i; visTimer(); }
-  function avbrytRediger() { redigererIndex = null; visTimer(); }
+  function startRediger(i) {
+    if (ventePaLagring) return;
+    redigererIndex = redigererIndex === i ? null : i;
+    visTimer();
+  }
 
   function lagreRediger(i) {
-    const timer = parseFloat(document.getElementById('edit-timer').value);
-    if (!timer || timer <= 0) { alert('Angi gyldig tid.'); return; }
-    poster[i].kunde_navn = document.getElementById('edit-kunde-navn').value.trim() || poster[i].kunde_navn;
+    const t = parseFloat(document.getElementById('edit-timer').value);
+    if (!t || t <= 0) { alert('Angi gyldig tid.'); return; }
+    poster[i].kunde_navn = document.getElementById('edit-kunde').value.trim() || poster[i].kunde_navn;
     poster[i].dato       = document.getElementById('edit-dato').value || poster[i].dato;
-    poster[i].minutter   = Math.round(timer * 60);
+    poster[i].minutter   = Math.round(t * 60);
     poster[i].kommentar  = document.getElementById('edit-kommentar').value.trim();
     redigererIndex = null;
     lagreDraft();
     visTimer();
   }
+
+  function avbrytRediger() { redigererIndex = null; visTimer(); }
 
   function slettPost(i) {
     if (redigererIndex === i) redigererIndex = null;
@@ -521,60 +612,50 @@
   // ── SEND INN ──
   async function sendInn() {
     if (!poster.length) { alert('Ingen timer å sende inn.'); return; }
+    const mangler = poster.filter(p => !p.kommentar);
+    if (mangler.length > 0) {
+      alert(`${mangler.length} post${mangler.length > 1 ? 'er' : ''} mangler kommentar.\nKlikk på postene for å legge til.`);
+      redigererIndex = poster.indexOf(mangler[0]);
+      visTimer();
+      document.getElementById('time-entries').scrollIntoView({ behavior: 'smooth' });
+      return;
+    }
     const btn = document.getElementById('btn-submit');
     const msg = document.getElementById('status-msg');
-    btn.disabled = true;
-    btn.textContent = 'Sender inn...';
-    msg.textContent = '';
-
+    btn.disabled = true; btn.textContent = 'Sender inn...'; msg.textContent = '';
     try {
       const data = await jsonpGet({
-        action: 'submit_week',
-        ansatt_id: ansattId,
-        ansatt_navn: ansattNavn,
-        avdeling: '',
-        uke_nr: ukeNr,
-        aar,
-        timer: JSON.stringify(poster)
+        action: 'submit_week', ansatt_id: ansattId, ansatt_navn: ansattNavn,
+        avdeling: '', uke_nr: ukeNr, aar, timer: JSON.stringify(poster)
       });
-
       if (data.status === 'ok') {
         localStorage.removeItem('ms_draft_' + ukeNr);
         msg.style.color = 'var(--success)';
-        msg.textContent = `✓ Uke ${ukeNr} er sendt inn! ${data.rows_written} poster lagret.`;
+        msg.textContent = `✓ Uke ${ukeNr} sendt inn! ${data.rows_written} poster lagret.`;
         poster = []; visTimer();
       } else if (data.status === 'duplikat') {
         if (confirm(data.message)) {
-          const data2 = await jsonpGet({
-            action: 'submit_week',
-            ansatt_id: ansattId,
-            ansatt_navn: ansattNavn,
-            avdeling: '',
-            uke_nr: ukeNr,
-            aar,
-            timer: JSON.stringify(poster),
-            overskrive: 'true'
+          const d2 = await jsonpGet({
+            action: 'submit_week', ansatt_id: ansattId, ansatt_navn: ansattNavn,
+            avdeling: '', uke_nr: ukeNr, aar, timer: JSON.stringify(poster), overskrive: 'true'
           });
-          if (data2.status === 'ok') {
+          if (d2.status === 'ok') {
             localStorage.removeItem('ms_draft_' + ukeNr);
             msg.style.color = 'var(--success)';
-            msg.textContent = `✓ Uke ${ukeNr} er oppdatert.`;
+            msg.textContent = `✓ Uke ${ukeNr} oppdatert.`;
             poster = []; visTimer();
           }
         }
-        btn.disabled = false;
-        btn.textContent = `Send inn uke ${ukeNr}`;
+        btn.disabled = false; btn.textContent = `Send inn uke ${ukeNr}`;
       } else {
         msg.style.color = 'var(--error)';
         msg.textContent = 'Feil: ' + (data.message || 'Ukjent feil');
-        btn.disabled = false;
-        btn.textContent = `Send inn uke ${ukeNr}`;
+        btn.disabled = false; btn.textContent = `Send inn uke ${ukeNr}`;
       }
     } catch(e) {
       msg.style.color = 'var(--error)';
       msg.textContent = 'Tilkoblingsfeil. Prøv igjen.';
-      btn.disabled = false;
-      btn.textContent = `Send inn uke ${ukeNr}`;
+      btn.disabled = false; btn.textContent = `Send inn uke ${ukeNr}`;
     }
   }
 
