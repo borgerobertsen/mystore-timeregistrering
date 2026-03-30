@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystore – Lederrapport</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <script src="config.js?v=3"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #026B85; --teal-dark: #013E52; --teal-light: #E8F4F7;
+      --success: #00734D; --success-light: #E6F4EA;
+      --error: #C0392B; --error-light: #FDF0EF;
+      --amber: #F4A114; --amber-light: #FEF3E2;
+      --text: #1A1A1A; --text-muted: #5A6472;
+      --border: #D0D7DE; --bg: #F5F7F9;
+    }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); min-height: 100vh; }
+
+    .topbar { background: var(--teal-dark); color: #fff; padding: 0 1.5rem; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar-logo { font-family: 'Ubuntu', sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .topbar-logo-mark { width: 28px; height: 28px; background: var(--teal); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .topbar-logo-mark svg { width: 16px; height: 16px; fill: #fff; }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; font-size: 13px; }
+    .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+
+    .main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+    /* ── TABS ── */
+    .tabs { display: flex; gap: 4px; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+    .tab { padding: 10px 18px; font-size: 14px; cursor: pointer; border: none; background: none; color: var(--text-muted); font-family: 'Open Sans', sans-serif; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+    .tab:hover { color: var(--teal); }
+    .tab.active { color: var(--teal-dark); font-weight: 500; border-bottom-color: var(--teal); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .filter-bar label { font-size: 13px; color: var(--text-muted); }
+    .filter-bar select, .filter-bar input { padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Open Sans', sans-serif; color: var(--text); background: #fff; }
+    .filter-bar select:focus, .filter-bar input:focus { outline: none; border-color: var(--teal); }
+    .btn-refresh { background: var(--teal); color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Ubuntu', sans-serif; }
+    .btn-refresh:hover { background: var(--teal-dark); }
+
+    /* ── METRICS ── */
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+    .metric-card { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 1rem; }
+    .metric-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .metric-value { font-family: 'Ubuntu', sans-serif; font-size: 28px; font-weight: 700; color: var(--teal-dark); }
+    .metric-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .metric-card.warning { border-color: var(--amber); background: var(--amber-light); }
+    .metric-card.warning .metric-value { color: var(--amber); }
+
+    /* ── ALERT ── */
+    .alert { background: var(--error-light); border: 1px solid var(--error); border-radius: 8px; padding: 10px 14px; margin-bottom: 1rem; font-size: 14px; color: var(--error); }
+    .alert strong { font-weight: 500; }
+
+    /* ── TABELLER ── */
+    .card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; color: var(--teal-dark); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; padding: 8px 12px; font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--bg); color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--teal-light); }
+    .tid-cell { font-family: 'Ubuntu', sans-serif; font-weight: 500; color: var(--teal-dark); }
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar { height: 6px; background: var(--teal); border-radius: 3px; min-width: 4px; }
+    .kommentar-list { list-style: none; padding: 0; }
+    .kommentar-list li { padding: 4px 0; border-bottom: 1px solid var(--bg); font-size: 13px; color: var(--text-muted); }
+    .kommentar-list li:last-child { border-bottom: none; }
+    .kommentar-list li span { color: var(--text); font-weight: 500; }
+
+    /* ── EKSPORT ── */
+    .eksport-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-eksport { background: #fff; border: 1px solid var(--border); color: var(--text); padding: 7px 14px; border-radius: 8px; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+    .btn-eksport:hover { border-color: var(--teal); color: var(--teal); }
+
+    /* ── KUNDESØK ── */
+    .kunde-sok-wrap { display: flex; gap: 10px; margin-bottom: 1.5rem; }
+    .kunde-sok-wrap input { flex: 1; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 15px; font-family: 'Open Sans', sans-serif; }
+    .kunde-sok-wrap input:focus { outline: none; border-color: var(--teal); }
+    .btn-sok { background: var(--teal); color: #fff; border: none; padding: 10px 20px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Ubuntu', sans-serif; }
+
+    .kunde-resultat-header { background: var(--teal-dark); color: #fff; border-radius: 10px 10px 0 0; padding: 1rem 1.5rem; }
+    .kunde-resultat-navn { font-family: 'Ubuntu', sans-serif; font-size: 20px; font-weight: 700; }
+    .kunde-resultat-meta { font-size: 13px; opacity: 0.8; margin-top: 2px; }
+    .kunde-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); margin-bottom: 1rem; }
+    .kunde-metric { background: #fff; padding: 0.75rem 1rem; text-align: center; }
+    .kunde-metric-val { font-family: 'Ubuntu', sans-serif; font-size: 22px; font-weight: 700; color: var(--teal-dark); }
+    .kunde-metric-label { font-size: 12px; color: var(--text-muted); }
+
+    .loading { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 14px; }
+    .empty { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="topbar-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.5l7.5 3.75L12 12 4.5 8.25 12 4.5zM4 9.5l7 3.5v6.5L4 16V9.5zm9 10V13l7-3.5V16l-7 3.5z"/></svg>
+    </div>
+    Mystore – Lederrapport
+  </div>
+  <div class="topbar-right">
+    <span style="opacity:0.8;font-size:13px" id="user-name"></span>
+    <button class="btn-logout" onclick="loggUt()">Logg ut</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="byttTab('oversikt')">Oversikt</button>
+    <button class="tab" onclick="byttTab('ansatte')">Per ansatt</button>
+    <button class="tab" onclick="byttTab('kunder')">Per kunde</button>
+    <button class="tab" onclick="byttTab('avdeling')">Per avdeling</button>
+    <button class="tab" onclick="byttTab('kundesok')">Kundesøk</button>
+    <button class="tab" onclick="byttTab('eksport')">Eksport</button>
+  </div>
+
+  <!-- FILTER -->
+  <div class="filter-bar">
+    <label>Vis siste</label>
+    <select id="uker-select" onchange="lastRapport()">
+      <option value="1">1 uke</option>
+      <option value="2">2 uker</option>
+      <option value="4" selected>4 uker</option>
+      <option value="8">8 uker</option>
+      <option value="12">12 uker</option>
+    </select>
+    <button class="btn-refresh" onclick="lastRapport()">↻ Oppdater</button>
+    <span style="font-size:13px;color:var(--text-muted)" id="sist-oppdatert"></span>
+  </div>
+
+  <!-- OVERSIKT -->
+  <div class="tab-panel active" id="panel-oversikt">
+    <div id="oversikt-innhold"><div class="loading">Laster rapport...</div></div>
+  </div>
+
+  <!-- PER ANSATT -->
+  <div class="tab-panel" id="panel-ansatte">
+    <div class="card">
+      <div class="card-title">Timer per ansatt</div>
+      <div id="ansatt-tabell"><div class="loading">Laster...</div></div>
+    </div>
+  </div>
+
+  <!-- PER KUNDE -->
+  <div class="tab-panel" id="panel-kunder">
+    <div class="card">
+      <div class="card-title">Timer per kunde</div>
+      <div id="kunde-tabell"><div class="loading">Laster...</div></div>
+    </div>
+  </div>
+
+  <!-- PER AVDELING -->
+  <div class="tab-panel" id="panel-avdeling">
+    <div class="card">
+      <div class="card-title">Timer per avdeling</div>
+      <div id="avdeling-tabell"><div class="loading">Laster...</div></div>
+    </div>
+  </div>
+
+  <!-- KUNDESØK -->
+  <div class="tab-panel" id="panel-kundesok">
+    <div class="kunde-sok-wrap">
+      <input type="text" id="kunde-sok-input" placeholder="Søk etter kundenavn..." onkeydown="if(event.key==='Enter') sokKunde()">
+      <button class="btn-sok" onclick="sokKunde()">Søk</button>
+    </div>
+    <div id="kunde-sok-resultat"></div>
+  </div>
+
+  <!-- EKSPORT -->
+  <div class="tab-panel" id="panel-eksport">
+    <div class="card">
+      <div class="card-title">Eksporter rapport</div>
+      <p style="font-size:14px;color:var(--text-muted);margin-bottom:1.5rem">Eksporter timedata for valgt periode.</p>
+      <div class="eksport-btns">
+        <button class="btn-eksport" onclick="eksporter('csv')">📄 Last ned CSV</button>
+        <button class="btn-eksport" onclick="eksporter('excel')">📊 Last ned Excel</button>
+        <button class="btn-eksport" onclick="eksporter('sheets')">📋 Åpne i Google Sheets</button>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);margin-top:1rem" id="eksport-status"></p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ── Auth ──
+  const ansattId   = localStorage.getItem('ms_employee_id');
+  const ansattNavn = localStorage.getItem('ms_employee_name');
+  if (!ansattId) window.location.href = 'index.html';
+  document.getElementById('user-name').textContent = ansattNavn;
+
+  // ── JSONP ──
+  function jsonpGet(params) {
+    return new Promise((resolve, reject) => {
+      const cb = 'cb_' + Date.now();
+      const url = CONFIG.APPS_SCRIPT_URL + '?' +
+        Object.entries({...params, callback: cb})
+          .map(([k,v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+      window[cb] = data => { delete window[cb]; resolve(data); };
+      const s = document.createElement('script');
+      s.src = url; s.onerror = () => reject(new Error('Feilet'));
+      document.body.appendChild(s);
+    });
+  }
+
+  // ── Data ──
+  let rapportData = null;
+
+  async function lastRapport() {
+    const uker = document.getElementById('uker-select').value;
+    try {
+      const data = await jsonpGet({ action: 'getReport', uker });
+      if (data.status === 'ok') {
+        rapportData = data;
+        document.getElementById('sist-oppdatert').textContent =
+          'Oppdatert ' + new Date().toLocaleTimeString('no-NO', { hour: '2-digit', minute: '2-digit' });
+        byggRapport();
+      }
+    } catch(e) {
+      document.getElementById('oversikt-innhold').innerHTML =
+        '<div class="loading">Kunne ikke laste rapport. Prøv igjen.</div>';
+    }
+  }
+
+  function byggRapport() {
+    const { rader, ikkeLevert, sisteUkeNr } = rapportData;
+
+    // ── Metrics ──
+    const totalMin    = rader.reduce((s, r) => s + r.minutter, 0);
+    const ansatte     = [...new Set(rader.map(r => r.ansatt_navn))];
+    const kunder      = [...new Set(rader.map(r => r.kunde_navn))];
+    const uker        = [...new Set(rader.map(r => `${r.aar}-${r.uke_nr}`))];
+
+    // ── Oversikt ──
+    let oversiktHtml = `
+      <div class="metrics">
+        <div class="metric-card">
+          <div class="metric-label">Totalt timer</div>
+          <div class="metric-value">${(totalMin/60).toFixed(1)}</div>
+          <div class="metric-sub">${uker.length} uke${uker.length !== 1 ? 'r' : ''}</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Aktive ansatte</div>
+          <div class="metric-value">${ansatte.length}</div>
+          <div class="metric-sub">har registrert tid</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Kunder betjent</div>
+          <div class="metric-value">${kunder.length}</div>
+          <div class="metric-sub">unike kunder</div>
+        </div>
+        ${ikkeLevert.length > 0 ? `
+        <div class="metric-card warning">
+          <div class="metric-label">Ikke levert uke ${sisteUkeNr}</div>
+          <div class="metric-value">${ikkeLevert.length}</div>
+          <div class="metric-sub">${ikkeLevert.slice(0,2).join(', ')}${ikkeLevert.length > 2 ? '...' : ''}</div>
+        </div>` : `
+        <div class="metric-card" style="border-color:var(--success);background:var(--success-light)">
+          <div class="metric-label">Uke ${sisteUkeNr}</div>
+          <div class="metric-value" style="color:var(--success)">✓</div>
+          <div class="metric-sub">Alle har levert</div>
+        </div>`}
+      </div>`;
+
+    if (ikkeLevert.length > 0) {
+      oversiktHtml += `<div class="alert"><strong>Ikke levert uke ${sisteUkeNr}:</strong> ${ikkeLevert.join(', ')}</div>`;
+    }
+
+    // Siste aktivitet per ansatt
+    const perAnsatt = {};
+    rader.forEach(r => {
+      if (!perAnsatt[r.ansatt_navn]) perAnsatt[r.ansatt_navn] = { min: 0, kunder: new Set() };
+      perAnsatt[r.ansatt_navn].min += r.minutter;
+      perAnsatt[r.ansatt_navn].kunder.add(r.kunde_navn);
+    });
+
+    const maxMin = Math.max(...Object.values(perAnsatt).map(v => v.min));
+
+    oversiktHtml += `<div class="card"><div class="card-title">Oversikt per ansatt</div><table>
+      <tr><th>Ansatt</th><th>Timer</th><th>Kunder</th><th style="width:200px">Fordeling</th></tr>`;
+    Object.entries(perAnsatt).sort((a,b) => b[1].min - a[1].min).forEach(([navn, v]) => {
+      const bredde = Math.round((v.min / maxMin) * 180);
+      oversiktHtml += `<tr>
+        <td>${navn}</td>
+        <td class="tid-cell">${(v.min/60).toFixed(1)}t</td>
+        <td style="color:var(--text-muted)">${v.kunder.size}</td>
+        <td><div class="bar-wrap"><div class="bar" style="width:${bredde}px"></div></div></td>
+      </tr>`;
+    });
+    oversiktHtml += `</table></div>`;
+
+    document.getElementById('oversikt-innhold').innerHTML = oversiktHtml;
+
+    // ── Per ansatt ──
+    let ansattHtml = '<table><tr><th>Ansatt</th><th>Avdeling</th><th>Uke</th><th>Kunde</th><th>Timer</th><th>Kommentar</th></tr>';
+    const sortert = [...rader].sort((a,b) => a.ansatt_navn.localeCompare(b.ansatt_navn) || a.uke_nr - b.uke_nr);
+    sortert.forEach(r => {
+      ansattHtml += `<tr>
+        <td>${r.ansatt_navn}</td>
+        <td style="color:var(--text-muted)">${r.avdeling}</td>
+        <td style="color:var(--text-muted)">Uke ${r.uke_nr}</td>
+        <td>${r.kunde_navn}</td>
+        <td class="tid-cell">${(r.minutter/60).toFixed(1)}t</td>
+        <td style="color:var(--text-muted);font-size:13px">${r.kommentar || '–'}</td>
+      </tr>`;
+    });
+    ansattHtml += '</table>';
+    document.getElementById('ansatt-tabell').innerHTML = ansattHtml;
+
+    // ── Per kunde ──
+    const perKunde = {};
+    rader.forEach(r => {
+      if (!perKunde[r.kunde_navn]) perKunde[r.kunde_navn] = { min: 0, ansatte: new Set(), kommentarer: [] };
+      perKunde[r.kunde_navn].min += r.minutter;
+      perKunde[r.kunde_navn].ansatte.add(r.ansatt_navn);
+      if (r.kommentar) perKunde[r.kunde_navn].kommentarer.push({ ansatt: r.ansatt_navn, tekst: r.kommentar, dato: r.dato });
+    });
+
+    const maxKundeMin = Math.max(...Object.values(perKunde).map(v => v.min));
+    let kundeHtml = '<table><tr><th>Kunde</th><th>Timer totalt</th><th>Ansatte</th><th style="width:180px">Fordeling</th></tr>';
+    Object.entries(perKunde).sort((a,b) => b[1].min - a[1].min).forEach(([navn, v]) => {
+      const bredde = Math.round((v.min / maxKundeMin) * 160);
+      kundeHtml += `<tr>
+        <td><strong>${navn}</strong></td>
+        <td class="tid-cell">${(v.min/60).toFixed(1)}t</td>
+        <td style="color:var(--text-muted);font-size:13px">${[...v.ansatte].join(', ')}</td>
+        <td><div class="bar-wrap"><div class="bar" style="width:${bredde}px"></div></div></td>
+      </tr>`;
+    });
+    kundeHtml += '</table>';
+    document.getElementById('kunde-tabell').innerHTML = kundeHtml;
+
+    // ── Per avdeling ──
+    const perAvdeling = {};
+    rader.forEach(r => {
+      const avd = r.avdeling || 'Ukjent';
+      if (!perAvdeling[avd]) perAvdeling[avd] = { min: 0, ansatte: new Set(), kunder: new Set() };
+      perAvdeling[avd].min += r.minutter;
+      perAvdeling[avd].ansatte.add(r.ansatt_navn);
+      perAvdeling[avd].kunder.add(r.kunde_navn);
+    });
+
+    let avdelingHtml = '<table><tr><th>Avdeling</th><th>Timer totalt</th><th>Ansatte</th><th>Kunder</th></tr>';
+    Object.entries(perAvdeling).sort((a,b) => b[1].min - a[1].min).forEach(([avd, v]) => {
+      avdelingHtml += `<tr>
+        <td><strong>${avd}</strong></td>
+        <td class="tid-cell">${(v.min/60).toFixed(1)}t</td>
+        <td style="color:var(--text-muted)">${v.ansatte.size}</td>
+        <td style="color:var(--text-muted)">${v.kunder.size}</td>
+      </tr>`;
+    });
+    avdelingHtml += '</table>';
+    document.getElementById('avdeling-tabell').innerHTML = avdelingHtml;
+  }
+
+  // ── Kundesøk ──
+  async function sokKunde() {
+    const q = document.getElementById('kunde-sok-input').value.trim();
+    if (!q) return;
+    document.getElementById('kunde-sok-resultat').innerHTML = '<div class="loading">Søker...</div>';
+    try {
+      const data = await jsonpGet({ action: 'getReport', uker: 52, kunde: q });
+      if (data.status === 'ok') visKundeResultat(q, data.kundeRader, data.innevAar);
+    } catch(e) {
+      document.getElementById('kunde-sok-resultat').innerHTML = '<div class="empty">Søk feilet. Prøv igjen.</div>';
+    }
+  }
+
+  function visKundeResultat(q, rader, aar) {
+    if (!rader.length) {
+      document.getElementById('kunde-sok-resultat').innerHTML =
+        `<div class="empty">Ingen aktivitet funnet for "${q}" i ${aar}.</div>`;
+      return;
+    }
+
+    const totalMin  = rader.reduce((s, r) => s + r.minutter, 0);
+    const ansatte   = [...new Set(rader.map(r => r.ansatt_navn))];
+    const kundeNavn = rader[0].kunde_navn;
+
+    let html = `
+      <div class="kunde-resultat-header">
+        <div class="kunde-resultat-navn">${kundeNavn}</div>
+        <div class="kunde-resultat-meta">Aktivitet i ${aar}</div>
+      </div>
+      <div class="kunde-metrics">
+        <div class="kunde-metric">
+          <div class="kunde-metric-val">${(totalMin/60).toFixed(1)}t</div>
+          <div class="kunde-metric-label">Totalt</div>
+        </div>
+        <div class="kunde-metric">
+          <div class="kunde-metric-val">${ansatte.length}</div>
+          <div class="kunde-metric-label">Ansatte</div>
+        </div>
+        <div class="kunde-metric">
+          <div class="kunde-metric-val">${rader.length}</div>
+          <div class="kunde-metric-label">Økter</div>
+        </div>
+      </div>
+      <div class="card" style="border-radius:0 0 12px 12px;margin-top:0">
+        <table>
+          <tr><th>Dato</th><th>Ansatt</th><th>Avdeling</th><th>Uke</th><th>Timer</th><th>Kommentar</th></tr>`;
+
+    rader.sort((a,b) => b.dato.toString().localeCompare(a.dato.toString())).forEach(r => {
+      html += `<tr>
+        <td style="color:var(--text-muted)">${r.dato}</td>
+        <td>${r.ansatt_navn}</td>
+        <td style="color:var(--text-muted)">${r.avdeling}</td>
+        <td style="color:var(--text-muted)">Uke ${r.uke_nr}</td>
+        <td class="tid-cell">${(r.minutter/60).toFixed(1)}t</td>
+        <td style="font-size:13px;color:var(--text-muted)">${r.kommentar || '–'}</td>
+      </tr>`;
+    });
+
+    html += '</table></div>';
+    document.getElementById('kunde-sok-resultat').innerHTML = html;
+  }
+
+  // ── Eksport ──
+  async function eksporter(format) {
+    const uker   = document.getElementById('uker-select').value;
+    const status = document.getElementById('eksport-status');
+    status.textContent = 'Henter data...';
+
+    try {
+      const data = await jsonpGet({ action: 'exportReport', uker, format });
+
+      if (format === 'sheets' && data.url) {
+        status.textContent = 'Åpner Google Sheets...';
+        window.open(data.url, '_blank');
+        status.textContent = '✓ Sheets-dokument opprettet!';
+        return;
+      }
+
+      if (!data.rader || !data.rader.length) {
+        status.textContent = 'Ingen data å eksportere.';
+        return;
+      }
+
+      const headers = ['Ansatt','Avdeling','Uke','År','Dato','Kunde','Minutter','Timer','Kommentar'];
+      const rows    = data.rader.map(r => [
+        r.ansatt_navn, r.avdeling, r.uke_nr, r.aar, r.dato,
+        r.kunde_navn, r.minutter, r.timer, r.kommentar || ''
+      ]);
+
+      if (format === 'csv') {
+        const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+        lastNed(csv, `mystore-rapport-${new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+        status.textContent = '✓ CSV lastet ned!';
+
+      } else if (format === 'excel') {
+        // Enkel Excel-kompatibel HTML-tabell
+        let xls = `<table><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
+        rows.forEach(r => { xls += `<tr>${r.map(v => `<td>${v}</td>`).join('')}</tr>`; });
+        xls += '</table>';
+        const blob = `<html><head><meta charset="UTF-8"></head><body>${xls}</body></html>`;
+        lastNed(blob, `mystore-rapport-${new Date().toISOString().split('T')[0]}.xls`, 'application/vnd.ms-excel');
+        status.textContent = '✓ Excel-fil lastet ned!';
+      }
+    } catch(e) {
+      status.textContent = 'Eksport feilet. Prøv igjen.';
+    }
+  }
+
+  function lastNed(innhold, filnavn, type) {
+    const blob = new Blob(['\ufeff' + innhold], { type });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filnavn; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  // ── Tabs ──
+  function byttTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.tab[onclick="byttTab('${tab}')"]`).classList.add('active');
+    document.getElementById(`panel-${tab}`).classList.add('active');
+  }
+
+  function loggUt() {
+    localStorage.removeItem('ms_employee_id');
+    localStorage.removeItem('ms_employee_name');
+    localStorage.removeItem('ms_session');
+    window.location.href = 'index.html';
+  }
+
+  // Last rapport ved oppstart
+  window.addEventListener('load', lastRapport);
+</script>
+</body>
+</html>
