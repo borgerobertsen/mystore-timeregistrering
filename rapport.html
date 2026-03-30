@@ -119,12 +119,12 @@
   <div class="filter-bar">
     <label>Periode</label>
     <select id="periode-select" onchange="lastRapport()">
-      <option value="denne">Denne uken</option>
-      <option value="forrige">Forrige uke</option>
-      <option value="4" selected>Siste 4 uker</option>
-      <option value="12">Siste 12 uker</option>
-      <option value="aar">Inneværende år</option>
-    </select>
+  <option value="denne">Denne uken</option>
+  <option value="forrige">Forrige uke</option>
+  <option value="4" selected>Siste 4 uker</option>
+  <option value="12">Siste 12 uker</option>
+  <option value="aar">Inneværende år</option>
+</select>
     <button class="btn-refresh" onclick="lastRapport()">↻ Oppdater</button>
     <span class="filter-periode" id="filter-periode-tekst"></span>
     <span style="font-size:13px;color:var(--text-muted)" id="sist-oppdatert"></span>
@@ -400,6 +400,11 @@
     else document.getElementById('kunde-sok-resultat').innerHTML = `<div class="empty">Ingen kunder funnet for "${q}" i lastet periode. Prøv å utvide perioden.</div>`;
   }
 
+function formaterDato(dato) {
+  const d = new Date(dato);
+  return `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+}
+  
   function visKundeDetalj(kundeNavn) {
     document.getElementById('kunde-forslag').innerHTML = '';
     document.getElementById('kunde-sok-input').value = kundeNavn;
@@ -438,7 +443,7 @@
 
     [...rader].sort((a,b) => String(b.dato).localeCompare(String(a.dato))).forEach(r => {
       html += `<tr>
-        <td style="color:var(--text-muted)">${r.dato}</td>
+        <td style="color:var(--text-muted)">${formaterDato(r.dato)}</td>
         <td>${r.ansatt_navn}</td>
         <td style="color:var(--text-muted)">${r.avdeling}</td>
         <td style="color:var(--text-muted)">Uke ${r.uke_nr}</td>
