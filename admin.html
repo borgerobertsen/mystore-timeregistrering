@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mystore Timeregistrering – Admin</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0f0f11;
+    --surface: #18181c;
+    --border: #2a2a30;
+    --accent: #5b6af5;
+    --accent-soft: rgba(91,106,245,0.12);
+    --success: #34d399;
+    --warning: #fbbf24;
+    --danger: #f87171;
+    --text: #e8e8ed;
+    --muted: #6b6b7a;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 16px;
+  }
+
+  /* ── Login ── */
+  #login-screen {
+    width: 100%;
+    max-width: 380px;
+    margin: auto;
+    animation: fadeUp .4s ease both;
+  }
+
+  .logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .logo span { color: var(--accent); }
+
+  .login-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+  }
+
+  .login-card h1 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .login-card p {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  input[type="password"], input[type="text"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 11px 14px;
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+  }
+
+  input:focus { border-color: var(--accent); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 20px;
+    border-radius: var(--radius);
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: opacity .15s, transform .1s;
+  }
+
+  .btn:active { transform: scale(.97); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  .btn-primary { background: var(--accent); color: #fff; width: 100%; justify-content: center; margin-top: 16px; }
+  .btn-primary:hover:not(:disabled) { opacity: .88; }
+
+  .btn-sm { font-size: 12px; padding: 6px 12px; }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost:hover { background: var(--surface); }
+  .btn-danger { background: rgba(248,113,113,.15); border: 1px solid rgba(248,113,113,.3); color: var(--danger); }
+  .btn-danger:hover { background: rgba(248,113,113,.25); }
+  .btn-success { background: rgba(52,211,153,.15); border: 1px solid rgba(52,211,153,.3); color: var(--success); }
+  .btn-success:hover { background: rgba(52,211,153,.25); }
+
+  .error-msg {
+    font-size: 12px;
+    color: var(--danger);
+    margin-top: 10px;
+    min-height: 18px;
+  }
+
+  /* ── Admin panel ── */
+  #admin-screen {
+    width: 100%;
+    max-width: 780px;
+    display: none;
+    animation: fadeUp .4s ease both;
+  }
+
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+  }
+
+  .top-bar .logo { margin-bottom: 0; text-align: left; }
+
+  .top-bar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--success);
+    display: inline-block;
+    box-shadow: 0 0 6px var(--success);
+  }
+
+  .status-label {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  /* Stats row */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+
+  .stat-card .stat-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 26px;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-card .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+  }
+
+  .stat-card.good .stat-value { color: var(--success); }
+  .stat-card.warn .stat-value { color: var(--warning); }
+
+  /* Table */
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .table-header span {
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    padding: 10px 20px;
+    text-align: left;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: rgba(255,255,255,.02);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,.02); }
+
+  td {
+    padding: 13px 20px;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  .employee-name { font-weight: 500; }
+
+  .pin-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  .pin-status.set {
+    background: rgba(52,211,153,.1);
+    color: var(--success);
+    border: 1px solid rgba(52,211,153,.2);
+  }
+
+  .pin-status.unset {
+    background: rgba(251,191,36,.1);
+    color: var(--warning);
+    border: 1px solid rgba(251,191,36,.2);
+  }
+
+  .actions { display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.7);
+    backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100;
+    opacity: 0; pointer-events: none;
+    transition: opacity .2s;
+  }
+
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 360px;
+    transform: translateY(12px);
+    transition: transform .25s ease;
+  }
+
+  .modal-overlay.open .modal { transform: translateY(0); }
+
+  .modal h3 { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
+  .modal p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+
+  .modal-actions { display: flex; gap: 10px; margin-top: 20px; }
+  .modal-actions .btn { flex: 1; justify-content: center; }
+
+  /* Loader */
+  .loader {
+    display: inline-block;
+    width: 16px; height: 16px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin .6s linear infinite;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    font-size: 13px;
+    display: flex; align-items: center; gap: 10px;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all .3s ease;
+    z-index: 200;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { border-color: rgba(52,211,153,.4); }
+  .toast.error { border-color: rgba(248,113,113,.4); }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN ── -->
+<div id="login-screen">
+  <div class="logo">Mystore <span>/</span> Timeregistrering</div>
+  <div class="login-card">
+    <h1>Admin-panel</h1>
+    <p>Logg inn med masterpassord for å administrere ansatte og PIN-koder.</p>
+    <label for="master-pw">Masterpassord</label>
+    <input type="password" id="master-pw" placeholder="••••••••" autocomplete="current-password">
+    <div class="error-msg" id="login-error"></div>
+    <button class="btn btn-primary" id="login-btn" onclick="doLogin()">Logg inn</button>
+  </div>
+</div>
+
+<!-- ── ADMIN PANEL ── -->
+<div id="admin-screen">
+  <div class="top-bar">
+    <div class="logo">Mystore <span>/</span> Admin</div>
+    <div class="top-bar-right">
+      <span class="status-label"><span class="status-dot"></span> Innlogget</span>
+      <button class="btn btn-sm btn-ghost" onclick="doLogout()">Logg ut</button>
+    </div>
+  </div>
+
+  <h2>PIN-administrasjon</h2>
+  <p class="subtitle">Sett eller reset PIN for ansatte. Alle endringer skrives direkte til Google Sheets.</p>
+
+  <div class="stats" id="stats-row">
+    <div class="stat-card">
+      <div class="stat-value" id="stat-total">–</div>
+      <div class="stat-label">Ansatte totalt</div>
+    </div>
+    <div class="stat-card good">
+      <div class="stat-value" id="stat-set">–</div>
+      <div class="stat-label">PIN satt</div>
+    </div>
+    <div class="stat-card warn">
+      <div class="stat-value" id="stat-unset">–</div>
+      <div class="stat-label">Mangler PIN</div>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <div class="table-header">
+      <span>Ansatte</span>
+      <button class="btn btn-sm btn-ghost" onclick="loadEmployees()">↻ Oppdater</button>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Navn</th>
+          <th>PIN-status</th>
+          <th style="text-align:right">Handlinger</th>
+        </tr>
+      </thead>
+      <tbody id="employee-table-body">
+        <tr><td colspan="3"><div class="empty-state"><span class="loader"></span></div></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── MODAL: Sett PIN ── -->
+<div class="modal-overlay" id="pin-modal">
+  <div class="modal">
+    <h3 id="modal-title">Sett PIN</h3>
+    <p id="modal-desc">Angi ny 4-sifret PIN for denne ansatte.</p>
+    <label for="new-pin">Ny PIN (4 siffer)</label>
+    <input type="text" id="new-pin" maxlength="4" pattern="\d{4}" placeholder="1234" inputmode="numeric">
+    <div class="error-msg" id="pin-error"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Avbryt</button>
+      <button class="btn btn-primary" id="modal-confirm-btn" onclick="confirmSetPin()">Lagre PIN</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── CONFIG ──
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFrqtBF1ayf4n4S0mQAIVZss8uJMnJS8yQKrfLgI2XAF_JJ9NW5eSW1Kzi0fo4wd0WmA/exec';
+
+  // ── STATE ──
+  let sessionToken = null;
+  let currentEmployee = null;
+  let employees = [];
+
+  // ── JSONP helper ──
+  function jsonp(params) {
+    return new Promise((resolve, reject) => {
+      const cbName = '_cb_' + Date.now();
+      const script = document.createElement('script');
+      const timeout = setTimeout(() => {
+        cleanup();
+        reject(new Error('Timeout'));
+      }, 10000);
+
+      window[cbName] = (data) => {
+        clearTimeout(timeout);
+        cleanup();
+        resolve(data);
+      };
+
+      const qs = Object.entries({ ...params, callback: cbName })
+        .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&');
+
+      script.src = `${APPS_SCRIPT_URL}?${qs}`;
+      script.onerror = () => { clearTimeout(timeout); cleanup(); reject(new Error('Script error')); };
+      document.body.appendChild(script);
+
+      function cleanup() {
+        delete window[cbName];
+        if (script.parentNode) script.parentNode.removeChild(script);
+      }
+    });
+  }
+
+  // ── AUTH ──
+  async function doLogin() {
+    const pw = document.getElementById('master-pw').value.trim();
+    const errEl = document.getElementById('login-error');
+    const btn = document.getElementById('login-btn');
+
+    if (!pw) { errEl.textContent = 'Skriv inn masterpassord.'; return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span> Verifiserer...';
+    errEl.textContent = '';
+
+    try {
+      const res = await jsonp({ action: 'adminLogin', password: pw });
+      if (res.success) {
+        sessionToken = res.token;
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('admin-screen').style.display = 'block';
+        loadEmployees();
+      } else {
+        errEl.textContent = 'Feil passord. Prøv igjen.';
+      }
+    } catch (e) {
+      errEl.textContent = 'Kunne ikke nå serveren. Prøv igjen.';
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = 'Logg inn';
+  }
+
+  document.getElementById('master-pw').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+
+  function doLogout() {
+    sessionToken = null;
+    document.getElementById('admin-screen').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'block';
+    document.getElementById('master-pw').value = '';
+  }
+
+  // ── LOAD EMPLOYEES ──
+  async function loadEmployees() {
+    const tbody = document.getElementById('employee-table-body');
+    tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><span class="loader"></span></div></td></tr>';
+
+    try {
+      const res = await jsonp({ action: 'adminGetEmployees', token: sessionToken });
+
+      if (!res.success) {
+        tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">Ingen tilgang eller feil token.</div></td></tr>';
+        return;
+      }
+
+      employees = res.employees || [];
+      renderTable();
+      updateStats();
+    } catch (e) {
+      tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">Feil ved lasting. Sjekk tilkobling.</div></td></tr>';
+    }
+  }
+
+  function renderTable() {
+    const tbody = document.getElementById('employee-table-body');
+    if (!employees.length) {
+      tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state">Ingen ansatte funnet i Sheets.</div></td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = employees.map(emp => `
+      <tr>
+        <td class="employee-name">${escHtml(emp.name)}</td>
+        <td>
+          ${emp.hasPin
+            ? '<span class="pin-status set">✓ Satt</span>'
+            : '<span class="pin-status unset">⚠ Ikke satt</span>'}
+        </td>
+        <td class="actions">
+          <button class="btn btn-sm btn-success" onclick="openSetPin('${escHtml(emp.id)}', '${escHtml(emp.name)}')">
+            ${emp.hasPin ? '↺ Reset PIN' : '+ Sett PIN'}
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function updateStats() {
+    const total = employees.length;
+    const set = employees.filter(e => e.hasPin).length;
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-set').textContent = set;
+    document.getElementById('stat-unset').textContent = total - set;
+  }
+
+  // ── PIN MODAL ──
+  function openSetPin(id, name) {
+    currentEmployee = { id, name };
+    document.getElementById('modal-title').textContent = 'PIN for ' + name;
+    document.getElementById('modal-desc').textContent = 'Angi ny 4-sifret PIN. Ansatte bruker denne for å logge inn.';
+    document.getElementById('new-pin').value = '';
+    document.getElementById('pin-error').textContent = '';
+    document.getElementById('pin-modal').classList.add('open');
+    setTimeout(() => document.getElementById('new-pin').focus(), 200);
+  }
+
+  function closeModal() {
+    document.getElementById('pin-modal').classList.remove('open');
+    currentEmployee = null;
+  }
+
+  document.getElementById('new-pin').addEventListener('input', e => {
+    e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
+  });
+
+  document.getElementById('new-pin').addEventListener('keydown', e => {
+    if (e.key === 'Enter') confirmSetPin();
+    if (e.key === 'Escape') closeModal();
+  });
+
+  async function confirmSetPin() {
+    const pin = document.getElementById('new-pin').value.trim();
+    const errEl = document.getElementById('pin-error');
+    const btn = document.getElementById('modal-confirm-btn');
+
+    if (!/^\d{4}$/.test(pin)) { errEl.textContent = 'PIN må være nøyaktig 4 siffer.'; return; }
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="loader"></span>';
+    errEl.textContent = '';
+
+    try {
+      const res = await jsonp({
+        action: 'adminSetPin',
+        token: sessionToken,
+        employeeId: currentEmployee.id,
+        pin: pin
+      });
+
+      if (res.success) {
+        closeModal();
+        showToast('✓ PIN satt for ' + currentEmployee.name, 'success');
+        // Oppdater lokalt uten full reload
+        const emp = employees.find(e => e.id === currentEmployee.id);
+        if (emp) emp.hasPin = true;
+        renderTable();
+        updateStats();
+      } else {
+        errEl.textContent = res.message || 'Kunne ikke sette PIN.';
+      }
+    } catch (e) {
+      errEl.textContent = 'Feil ved lagring. Prøv igjen.';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Lagre PIN';
+  }
+
+  // ── TOAST ──
+  function showToast(msg, type = 'success') {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast ' + type + ' show';
+    setTimeout(() => el.classList.remove('show'), 3000);
+  }
+
+  // ── UTIL ──
+  function escHtml(str) {
+    return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // Klikk utenfor modal for å lukke
+  document.getElementById('pin-modal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closeModal();
+  });
+</script>
+</body>
+</html>
