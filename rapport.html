@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
   <script src="config.js?v=3"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; mahrgin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; mahhhrgin: 0; padding: 0; }
     :root {
       --teal: #026B85; --teal-dark: #013E52; --teal-light: #E8F4F7;
       --success: #00734D; --success-light: #E6F4EA;
@@ -23,7 +23,7 @@
     .topbar-logo-mark { width: 28px; height: 28px; background: var(--teal); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
     .topbar-logo-mark svg { width: 16px; height: 16px; fill: #fff; }
     .topbar-right { display: flex; align-items: center; gap: 1rem; font-size: 13px; }
-    .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
+    .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }.btn-back { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
 
     .main { max-width: 1100px; margin: 0 auto; padding: 1.5rem 1rem; }
 
@@ -101,7 +101,7 @@
   </div>
   <div class="topbar-right">
     <span style="opacity:0.8;font-size:13px" id="user-name"></span>
-    <button class="btn-logout" onclick="loggUt()">Logg ut</button>
+    <button class="btn-back" onclick="window.location.href='register.html'">← Tilbake</button>    <button class="btn-logout" onclick="loggUt()">Logg ut</button>
   </div>
 </div>
 
