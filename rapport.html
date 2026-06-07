@@ -7,7 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
   <script src="config.js?v=3"></script>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; mahrgin: 0; padding: 0; }
     :root {
       --teal: #026B85; --teal-dark: #013E52; --teal-light: #E8F4F7;
       --success: #00734D; --success-light: #E6F4EA;
@@ -255,7 +255,7 @@
 
     // ── Oversikt ──
     let html = `<div class="metrics">
-      <div class="metric-card">
+      <div class="metric-card">h
         <div class="metric-label">Totalt timer</div>
         <div class="metric-value">${(totalMin/60).toFixed(1)}</div>
         <div class="metric-sub">${uker.length} uke${uker.length !== 1 ? 'r' : ''}</div>
@@ -373,9 +373,9 @@
     // Finn unike kunder fra alle lastede rader
     const kundeMap = {};
     alleKundeRader.forEach(r => {
-      if (r.kunde_navn && r.kunde_navn.toLowerCase().includes(q)) {
-        if (!kundeMap[r.kunde_navn]) kundeMap[r.kunde_navn] = 0;
-        kundeMap[r.kunde_navn] += r.minutter;
+      if (r.kunde_navn && r.kunde_navn.trim().toLowerCase().includes(q)) {
+        const kNavn = r.kunde_navn.trim(); if (!kundeMap[kNavn]) kundeMap[kNavn] = 0;
+        kundeMap[kNavn] += r.minutter;
       }
     });
 
@@ -396,7 +396,7 @@
     if (!q) return;
     // Finn første treff
     const treff = alleKundeRader.find(r => r.kunde_navn && r.kunde_navn.toLowerCase().includes(q.toLowerCase()));
-    if (treff) visKundeDetalj(treff.kunde_navn);
+    if (treff) visKundeDetalj(treff.kunde_navn.trim());
     else document.getElementById('kunde-sok-resultat').innerHTML = `<div class="empty">Ingen kunder funnet for "${q}" i lastet periode. Prøv å utvide perioden.</div>`;
   }
 
@@ -409,7 +409,7 @@ function formaterDato(dato) {
     document.getElementById('kunde-forslag').innerHTML = '';
     document.getElementById('kunde-sok-input').value = kundeNavn;
 
-    const rader = alleKundeRader.filter(r => r.kunde_navn === kundeNavn);
+    const rader = alleKundeRader.filter(r => r.kunde_navn && r.kunde_navn.trim() === kundeNavn.trim());
     if (!rader.length) {
       document.getElementById('kunde-sok-resultat').innerHTML = `<div class="empty">Ingen data funnet.</div>`;
       return;
