@@ -25,6 +25,8 @@
     .week-badge { background: rgba(255,255,255,0.15); padding: 3px 10px; border-radius: 20px; font-size: 12px; }
     .btn-logout { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; }
     .btn-logout:hover { background: rgba(255,255,255,0.1); }
+    .btn-leder { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; text-decoration: none; }
+    .btn-leder:hover { background: rgba(255,255,255,0.22); }
 
     .main { max-width: 860px; margin: 0 auto; padding: 1.5rem 1rem; }
 
@@ -162,6 +164,7 @@
   <div class="topbar-right">
     <span class="week-badge" id="week-badge">Uke –</span>
     <span style="opacity:0.85;font-size:13px" id="user-name"></span>
+    <a class="btn-leder" id="leder-link" href="rapport.html" style="display:none">Lederrapport</a>
     <button class="btn-logout" onclick="loggUt()">Logg ut</button>
   </div>
 </div>
@@ -284,6 +287,13 @@
 
   document.getElementById('week-badge').textContent = `Uke ${ukeNr} · ${aar}`;
   document.getElementById('user-name').textContent  = ansattNavn;
+
+  // Midlertidig: ledere som skal se Lederrapport-knappen. Legg til navn her.
+  // TODO: bytt til leder-flagg fra backend (Apps Script) naar det er paa plass.
+  const LEDERE = ['Børge Robertsen'];
+  if (LEDERE.includes((ansattNavn || '').trim())) {
+    document.getElementById('leder-link').style.display = 'inline-block';
+  }
   document.getElementById('submit-uke').textContent = ukeNr;
   document.getElementById('manuell-dato').value     = dagensDato;
 
