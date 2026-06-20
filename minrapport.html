@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mystore – Min rapport</title>
+  <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;500;700&family=Open+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <script src="config.js?v=3"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --teal: #026B85; --teal-dark: #013E52; --teal-light: #E8F4F7;
+      --success: #00734D; --success-light: #E6F4EA;
+      --error: #C0392B;
+      --text: #1A1A1A; --text-muted: #5A6472;
+      --border: #D0D7DE; --bg: #F5F7F9;
+    }
+    body { font-family: 'Open Sans', sans-serif; background: var(--bg); min-height: 100vh; }
+
+    .topbar { background: var(--teal-dark); color: #fff; padding: 0 1.5rem; height: 52px; display: flex; align-items: center; justify-content: space-between; }
+    .topbar-logo { font-family: 'Ubuntu', sans-serif; font-size: 16px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .topbar-logo-mark { width: 28px; height: 28px; background: var(--teal); border-radius: 6px; display: flex; align-items: center; justify-content: center; }
+    .topbar-logo-mark svg { width: 16px; height: 16px; fill: #fff; }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; font-size: 13px; }
+    .btn-back { background: none; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 4px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; }
+    .btn-back:hover { background: rgba(255,255,255,0.1); }
+
+    .main { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+    .page-header { margin-bottom: 1.5rem; }
+    .page-header h1 { font-family: 'Ubuntu', sans-serif; font-size: 22px; font-weight: 500; color: var(--text); }
+    .page-header p { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+
+    .filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; background: #fff; padding: 0.75rem 1rem; border-radius: 10px; border: 1px solid var(--border); }
+    .filter-bar label { font-size: 13px; color: var(--text-muted); }
+    .filter-bar select { padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'Open Sans', sans-serif; color: var(--text); background: #fff; cursor: pointer; }
+    .filter-bar select:focus { outline: none; border-color: var(--teal); }
+    .btn-refresh { background: var(--teal); color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Ubuntu', sans-serif; }
+    .btn-refresh:hover { background: var(--teal-dark); }
+    .filter-periode { font-size: 13px; color: var(--teal-dark); font-weight: 500; background: var(--teal-light); padding: 4px 12px; border-radius: 20px; }
+
+    .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 1.5rem; }
+    .metric-card { background: #fff; border-radius: 10px; border: 1px solid var(--border); padding: 1rem; }
+    .metric-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .metric-value { font-family: 'Ubuntu', sans-serif; font-size: 28px; font-weight: 700; color: var(--teal-dark); }
+    .metric-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+
+    .card { background: #fff; border-radius: 12px; border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+    .card-title { font-family: 'Ubuntu', sans-serif; font-size: 15px; font-weight: 500; color: var(--teal-dark); margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th { text-align: left; padding: 8px 12px; font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 12px; border-bottom: 1px solid var(--bg); color: var(--text); }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: var(--teal-light); }
+    .tid-cell { font-family: 'Ubuntu', sans-serif; font-weight: 500; color: var(--teal-dark); }
+    .bar-wrap { display: flex; align-items: center; gap: 8px; }
+    .bar { height: 6px; background: var(--teal); border-radius: 3px; min-width: 4px; }
+
+    .eksport-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-eksport { background: #fff; border: 1px solid var(--border); color: var(--text); padding: 9px 18px; border-radius: 8px; font-size: 14px; cursor: pointer; font-family: 'Open Sans', sans-serif; }
+    .btn-eksport:hover { border-color: var(--teal); color: var(--teal); }
+    .eksport-status { font-size: 13px; color: var(--text-muted); margin-top: 0.75rem; }
+
+    .loading { text-align: center; padding: 3rem; color: var(--text-muted); font-size: 14px; }
+    .empty { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 14px; }
+
+    .kunde-rad { cursor: pointer; transition: background 0.15s; }
+    .kunde-rad:hover td { background: var(--teal-light) !important; }
+    .kunde-rad.aktiv td { background: var(--teal-light) !important; font-weight: 600; }
+    .kunde-rad.aktiv td:first-child::before { content: '▶ '; color: var(--teal); font-size: 11px; }
+
+    .kundekort { background: #fff; border: 2px solid var(--teal); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; }
+    .kundekort-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px; }
+    .kundekort-navn { font-family: 'Ubuntu', sans-serif; font-size: 18px; font-weight: 700; color: var(--teal-dark); }
+    .kundekort-meta { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+    .kundekort-eksport { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn-kundekort { background: #fff; border: 1px solid var(--border); color: var(--text); padding: 7px 14px; border-radius: 7px; font-size: 13px; cursor: pointer; }
+    .btn-kundekort:hover { border-color: var(--teal); color: var(--teal); }
+    .btn-lukk { background: var(--teal-light); border: none; color: var(--teal-dark); padding: 7px 14px; border-radius: 7px; font-size: 13px; cursor: pointer; font-weight: 500; }
+
+    .uke-gruppe { margin-bottom: 1.5rem; }
+    .uke-header { font-size: 13px; font-weight: 600; color: var(--teal-dark); background: var(--teal-light); padding: 6px 12px; border-radius: 6px; margin-bottom: 6px; display: flex; justify-content: space-between; }
+    .uke-tabell { table-layout: fixed; width: 100%; }
+    .uke-tabell .col-dato { width: 120px; }
+    .uke-tabell .col-kunde { width: auto; }
+    .uke-tabell .col-timer { width: 80px; }
+    .uke-tabell .col-kommentar { width: 40%; }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">
+    <div class="topbar-logo-mark">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 2.5l7.5 3.75L12 12 4.5 8.25 12 4.5zM4 9.5l7 3.5v6.5L4 16V9.5zm9 10V13l7-3.5V16l-7 3.5z"/></svg>
+    </div>
+    Mystore
+  </div>
+  <div class="topbar-right">
+    <span style="opacity:0.85;font-size:13px" id="user-name"></span>
+    <a href="register.html" class="btn-back">⏱ Timeregistrering</a>
+    <a href="rapport.html" id="link-lederrapport" class="btn-back" style="display:none">📈 Lederrapport</a>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="page-header">
+    <h1>Min rapport</h1>
+    <p id="page-sub">Dine registrerte timer</p>
+  </div>
+
+  <div class="filter-bar">
+    <label>Periode</label>
+    <select id="periode-select" onchange="lastRapport()">
+      <option value="denne">Denne uken</option>
+      <option value="forrige">Forrige uke</option>
+      <option value="4" selected>Siste 4 uker</option>
+      <option value="12">Siste 12 uker</option>
+      <option value="aar">Inneværende år</option>
+    </select>
+    <button class="btn-refresh" onclick="lastRapport()">↻ Oppdater</button>
+    <span class="filter-periode" id="filter-periode-tekst"></span>
+  </div>
+
+  <div id="metrics-wrap"><div class="loading">Laster rapport...</div></div>
+  <div id="kunde-wrap"></div>
+  <div id="kunde-detalj-wrap"></div>
+  <div id="detaljer-wrap"></div>
+
+  <div class="card">
+    <div class="card-title">Last ned</div>
+    <div class="eksport-btns">
+      <button class="btn-eksport" onclick="eksporter('csv')">📄 Last ned CSV</button>
+      <button class="btn-eksport" onclick="eksporter('excel')">📊 Last ned Excel</button>
+    </div>
+    <p class="eksport-status" id="eksport-status"></p>
+  </div>
+
+</div>
+
+<script>
+  const ansattId    = localStorage.getItem('ms_employee_id');
+  const ansattNavn  = localStorage.getItem('ms_employee_name');
+  const ansattRolle = localStorage.getItem('ms_employee_rolle') || 'ansatt';
+  if (!ansattId) window.location.href = 'index.html';
+  if (ansattRolle === 'leder' || ansattRolle === 'admin') {
+    document.getElementById('link-lederrapport').style.display = '';
+  }
+
+  document.getElementById('user-name').textContent  = ansattNavn;
+  document.getElementById('page-sub').textContent   = `Timer registrert av ${ansattNavn}`;
+
+  function getISOWeek(d) {
+    d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+    return Math.ceil((((d - new Date(Date.UTC(d.getUTCFullYear(),0,1))) / 86400000) + 1) / 7);
+  }
+
+  function periodeParams() {
+    const val  = document.getElementById('periode-select').value;
+    const now  = new Date();
+    const uke  = getISOWeek(now);
+    const aar  = now.getFullYear();
+    if (val === 'denne')  { document.getElementById('filter-periode-tekst').textContent = `Uke ${uke}, ${aar}`; return { uker: 1 }; }
+    if (val === 'forrige'){ document.getElementById('filter-periode-tekst').textContent = `Uke ${uke-1}, ${aar}`; return { uker: 2, fra_uke: uke-1 }; }
+    if (val === 'aar')    { document.getElementById('filter-periode-tekst').textContent = `${aar}`; return { uker: 52 }; }
+    document.getElementById('filter-periode-tekst').textContent = `Siste ${val} uker`;
+    return { uker: parseInt(val) };
+  }
+
+  function jsonpGet(params) {
+    return new Promise((resolve, reject) => {
+      const cb = 'cb_' + Date.now() + '_' + Math.floor(Math.random() * 1e6);
+      const url = CONFIG.APPS_SCRIPT_URL + '?' +
+        Object.entries({ ...params, callback: cb })
+          .map(([k, v]) => `${k}=${encodeURIComponent(v)}`).join('&');
+      window[cb] = data => { delete window[cb]; s.remove(); resolve(data); };
+      const s = document.createElement('script');
+      s.src = url;
+      s.onerror = () => { delete window[cb]; s.remove(); reject(new Error('JSONP feilet')); };
+      document.body.appendChild(s);
+    });
+  }
+
+  let raderCache = [];
+
+  async function lastRapport() {
+    const params = periodeParams();
+    document.getElementById('metrics-wrap').innerHTML = '<div class="loading">Laster...</div>';
+    document.getElementById('kunde-wrap').innerHTML   = '';
+    document.getElementById('detaljer-wrap').innerHTML = '';
+    try {
+      const data = await jsonpGet({ action: 'getMyReport', ansatt_id: ansattId, ...params });
+      if (data.status !== 'ok') throw new Error(data.message);
+      raderCache = data.rader || [];
+      byggRapport(raderCache);
+    } catch(e) {
+      document.getElementById('metrics-wrap').innerHTML = `<div class="empty">Kunne ikke laste rapport. ${e.message || ''}</div>`;
+    }
+  }
+
+  function formatDato(dato) {
+    if (!dato) return '';
+    const m = String(dato).match(/(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return `${m[3]}.${m[2]}.${m[1]}`;
+    const d = new Date(dato);
+    return isNaN(d) ? String(dato) : `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}.${d.getFullYear()}`;
+  }
+
+  function byggRapport(rader) {
+    if (!rader.length) {
+      document.getElementById('metrics-wrap').innerHTML = '<div class="empty">Ingen timer registrert i valgt periode.</div>';
+      return;
+    }
+
+    const totalMin  = rader.reduce((s, r) => s + r.minutter, 0);
+    const kundeRader = rader.filter(r => r.type !== 'intern');
+    const internRader= rader.filter(r => r.type === 'intern');
+    const kundeMin  = kundeRader.reduce((s, r) => s + r.minutter, 0);
+    const internMin = internRader.reduce((s, r) => s + r.minutter, 0);
+    const kunder    = [...new Set(kundeRader.map(r => r.kunde_navn))];
+    const uker      = [...new Set(rader.map(r => r.uke_nr))];
+    const kundePst  = totalMin ? Math.round(kundeMin / totalMin * 100) : 0;
+    const internPst = totalMin ? Math.round(internMin / totalMin * 100) : 0;
+
+    // ── Metrikk-kort ──
+    document.getElementById('metrics-wrap').innerHTML = `
+      <div class="metrics">
+        <div class="metric-card">
+          <div class="metric-label">Totalt timer</div>
+          <div class="metric-value">${(totalMin/60).toFixed(1)}</div>
+          <div class="metric-sub">${uker.length} uke${uker.length !== 1 ? 'r' : ''}</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Kundetimer</div>
+          <div class="metric-value">${(kundeMin/60).toFixed(1)}</div>
+          <div class="metric-sub">${kundePst}% av total</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Internt</div>
+          <div class="metric-value" style="color:#9B59B6">${(internMin/60).toFixed(1)}</div>
+          <div class="metric-sub">${internPst}% av total</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-label">Snitt per uke</div>
+          <div class="metric-value">${(totalMin / 60 / uker.length).toFixed(1)}</div>
+          <div class="metric-sub">timer</div>
+        </div>
+      </div>
+      ${totalMin > 0 ? `<div style="background:#fff;border:1px solid var(--border);border-radius:10px;padding:1rem;margin-bottom:1.5rem">
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:6px">Fordeling kunde / intern</div>
+        <div style="display:flex;height:10px;border-radius:20px;overflow:hidden;background:var(--bg)">
+          <div style="width:${kundePst}%;background:var(--teal);transition:width 0.4s"></div>
+          <div style="width:${internPst}%;background:#9B59B6;transition:width 0.4s"></div>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:6px">
+          <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px">
+            <span style="width:8px;height:8px;border-radius:50%;background:var(--teal);display:inline-block"></span>Kundetimer ${kundePst}%</span>
+          <span style="font-size:12px;color:var(--text-muted);display:flex;align-items:center;gap:4px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#9B59B6;display:inline-block"></span>Internt ${internPst}%</span>
+        </div>
+      </div>` : ''}`;
+
+    // ── Per kunde (kun kundetimer) ──
+    const perKunde = {};
+    kundeRader.forEach(r => {
+      if (!perKunde[r.kunde_navn]) perKunde[r.kunde_navn] = 0;
+      perKunde[r.kunde_navn] += r.minutter;
+    });
+    const maxMin = Math.max(...Object.values(perKunde), 1);
+    let kundeHtml = '<table><tr><th>Kunde</th><th>Timer</th><th style="width:180px">Fordeling</th></tr>';
+    Object.entries(perKunde).sort((a,b) => b[1]-a[1]).forEach(([navn, min]) => {
+      const bredde = Math.max(4, Math.round((min / maxMin) * 160));
+      kundeHtml += `<tr class="kunde-rad" onclick="visKundeDetalj('${navn.replace(/'/g, "\\'")}')">
+        <td><strong>${navn}</strong></td>
+        <td class="tid-cell">${(min/60).toFixed(1)}t</td>
+        <td><div class="bar-wrap"><div class="bar" style="width:${bredde}px"></div><span style="font-size:12px;color:var(--text-muted)">${Math.round(min/kundeMin*100)}%</span></div></td>
+      </tr>`;
+    });
+    let kundeWrapHtml = `<div class="card">
+      <div class="card-title">Kundetimer <span style="font-size:12px;color:var(--text-muted);font-weight:400">Klikk på en kunde for detaljer</span></div>
+      ${kundeHtml}</table></div>`;
+
+    // ── Intern aktivitet ──
+    if (internRader.length > 0) {
+      const perKat = {};
+      internRader.forEach(r => {
+        const kat = r.kategori || r.kunde_navn;
+        if (!perKat[kat]) perKat[kat] = 0;
+        perKat[kat] += r.minutter;
+      });
+      const maxKatMin = Math.max(...Object.values(perKat), 1);
+      let internHtml = '<table><tr><th>Kategori</th><th>Timer</th><th style="width:180px">Fordeling</th></tr>';
+      Object.entries(perKat).sort((a,b) => b[1]-a[1]).forEach(([kat, min]) => {
+        const bredde = Math.max(4, Math.round((min / maxKatMin) * 160));
+        internHtml += `<tr>
+          <td><span style="display:inline-flex;align-items:center;gap:6px">
+            <span style="width:8px;height:8px;border-radius:50%;background:#9B59B6;flex-shrink:0"></span>
+            <strong>${kat}</strong></span></td>
+          <td class="tid-cell" style="color:#9B59B6">${(min/60).toFixed(1)}t</td>
+          <td><div class="bar-wrap"><div class="bar" style="width:${bredde}px;background:#9B59B6"></div>
+            <span style="font-size:12px;color:var(--text-muted)">${Math.round(min/internMin*100)}%</span></div></td>
+        </tr>`;
+      });
+      kundeWrapHtml += `<div class="card"><div class="card-title">Intern aktivitet</div>${internHtml}</table></div>`;
+    }
+
+    document.getElementById('kunde-wrap').innerHTML = kundeWrapHtml;
+
+    // ── Detaljer per uke ──
+    const perUke = {};
+    rader.forEach(r => {
+      const key = `${r.aar}-${String(r.uke_nr).padStart(2,'0')}`;
+      if (!perUke[key]) perUke[key] = { uke_nr: r.uke_nr, aar: r.aar, min: 0, rader: [] };
+      perUke[key].min += r.minutter;
+      perUke[key].rader.push(r);
+    });
+
+    let detaljerHtml = '<div class="card"><div class="card-title">Detaljer per uke</div>';
+    Object.entries(perUke).sort((a,b) => b[0].localeCompare(a[0])).forEach(([, v]) => {
+      detaljerHtml += `<div class="uke-gruppe">
+        <div class="uke-header">
+          <span>Uke ${v.uke_nr}, ${v.aar}</span>
+          <span>${(v.min/60).toFixed(1)}t totalt</span>
+        </div>
+        <table class="uke-tabell">
+          <tr><th class="col-dato">Dato</th><th class="col-kunde">Kunde</th><th class="col-timer">Timer</th><th class="col-kommentar">Kommentar</th></tr>`;
+      [...v.rader].sort((a,b) => String(b.dato).localeCompare(String(a.dato))).forEach(r => {
+        detaljerHtml += `<tr>
+          <td style="color:var(--text-muted)">${formatDato(r.dato)}</td>
+          <td>${r.kunde_navn}</td>
+          <td class="tid-cell">${(r.minutter/60).toFixed(1)}t</td>
+          <td style="font-size:13px;color:var(--text-muted)">${r.kommentar || '–'}</td>
+        </tr>`;
+      });
+      detaljerHtml += '</table></div>';
+    });
+    detaljerHtml += '</div>';
+    document.getElementById('detaljer-wrap').innerHTML = detaljerHtml;
+  }
+
+  // ── Kundekort ──
+  let aktivKundeNavn = null;
+
+  function visKundeDetalj(kundeNavn) {
+    // Marker aktiv rad
+    document.querySelectorAll('.kunde-rad').forEach(r => r.classList.remove('aktiv'));
+    document.querySelectorAll('.kunde-rad').forEach(r => {
+      if (r.querySelector('td strong') && r.querySelector('td strong').textContent === kundeNavn) {
+        r.classList.add('aktiv');
+      }
+    });
+
+    aktivKundeNavn = kundeNavn;
+    const rader = raderCache.filter(r => r.kunde_navn === kundeNavn);
+    if (!rader.length) return;
+
+    const totalMin = rader.reduce((s, r) => s + r.minutter, 0);
+    const uker     = [...new Set(rader.map(r => r.uke_nr))];
+
+    let html = `<div class="kundekort">
+      <div class="kundekort-header">
+        <div>
+          <div class="kundekort-navn">${kundeNavn}</div>
+          <div class="kundekort-meta">${(totalMin/60).toFixed(1)} timer · ${rader.length} økt${rader.length !== 1 ? 'er' : ''} · ${uker.length} uke${uker.length !== 1 ? 'r' : ''}</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <div class="kundekort-eksport">
+            <button class="btn-kundekort" onclick="eksporterKunde('csv')">📄 CSV</button>
+            <button class="btn-kundekort" onclick="eksporterKunde('excel')">📊 Excel</button>
+          </div>
+          <button class="btn-lukk" onclick="lukkKundeDetalj()">✕ Lukk</button>
+        </div>
+      </div>
+      <table class="uke-tabell">
+        <tr><th class="col-dato">Dato</th><th class="col-kunde">Uke</th><th class="col-timer">Timer</th><th class="col-kommentar">Kommentar</th></tr>`;
+
+    [...rader].sort((a,b) => String(b.dato).localeCompare(String(a.dato))).forEach(r => {
+      html += `<tr>
+        <td style="color:var(--text-muted)">${formatDato(r.dato)}</td>
+        <td style="color:var(--text-muted)">Uke ${r.uke_nr}, ${r.aar}</td>
+        <td class="tid-cell">${(r.minutter/60).toFixed(1)}t</td>
+        <td style="font-size:13px;color:var(--text-muted)">${r.kommentar || '–'}</td>
+      </tr>`;
+    });
+    html += '</table></div>';
+
+    document.getElementById('kunde-detalj-wrap').innerHTML = html;
+    document.getElementById('kunde-detalj-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function lukkKundeDetalj() {
+    aktivKundeNavn = null;
+    document.getElementById('kunde-detalj-wrap').innerHTML = '';
+    document.querySelectorAll('.kunde-rad').forEach(r => r.classList.remove('aktiv'));
+  }
+
+  function eksporterKunde(format) {
+    if (!aktivKundeNavn) return;
+    const rader = raderCache.filter(r => r.kunde_navn === aktivKundeNavn);
+    const headers = ['Kunde','Uke','År','Dato','Timer','Minutter','Kommentar'];
+    const rows = rader.sort((a,b) => String(b.dato).localeCompare(String(a.dato))).map(r => [
+      r.kunde_navn, r.uke_nr, r.aar, formatDato(r.dato),
+      (r.minutter/60).toFixed(2).replace('.', ','),
+      r.minutter, r.kommentar || ''
+    ]);
+    const filnavn = `${aktivKundeNavn.replace(/\s/g,'-')}-${ansattNavn.replace(/\s/g,'-')}-${new Date().toISOString().split('T')[0]}`;
+    if (format === 'csv') {
+      const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+      lastNed('\ufeff' + csv, `${filnavn}.csv`, 'text/csv');
+    } else {
+      let xls = `<table><tr>${headers.map(h => `<th style="background:#026B85;color:#fff">${h}</th>`).join('')}</tr>`;
+      rows.forEach(r => { xls += `<tr>${r.map((v,i) => `<td${i===4?' style="mso-number-format:\'\\@\'"':''}>${v}</td>`).join('')}</tr>`; });
+      xls += '</table>';
+      lastNed(`<html><head><meta charset="UTF-8"></head><body>${xls}</body></html>`, `${filnavn}.xls`, 'application/vnd.ms-excel');
+    }
+  }
+
+  // ── Eksport ──
+  function eksporter(format) {
+    if (!raderCache.length) { document.getElementById('eksport-status').textContent = 'Ingen data å eksportere.'; return; }
+    const headers = ['Uke','År','Dato','Kunde','Minutter','Timer','Kommentar'];
+    const rows = raderCache.map(r => [
+      r.uke_nr, r.aar, formatDato(r.dato), r.kunde_navn,
+      r.minutter,
+      (r.minutter/60).toFixed(2).replace('.', ','),
+      r.kommentar || ''
+    ]);
+    const filnavn = `minrapport-${ansattNavn.replace(/\s/g,'-')}-${new Date().toISOString().split('T')[0]}`;
+    if (format === 'csv') {
+      const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+      lastNed('\ufeff' + csv, `${filnavn}.csv`, 'text/csv');
+      document.getElementById('eksport-status').textContent = '✓ CSV lastet ned!';
+    } else {
+      let xls = `<table><tr>${headers.map(h => `<th style="background:#026B85;color:#fff">${h}</th>`).join('')}</tr>`;
+      rows.forEach(r => {
+        xls += `<tr>${r.map((v, i) => `<td${i===5?' style="mso-number-format:\'\\@\'"':''}>${v}</td>`).join('')}</tr>`;
+      });
+      xls += '</table>';
+      lastNed(`<html><head><meta charset="UTF-8"></head><body>${xls}</body></html>`, `${filnavn}.xls`, 'application/vnd.ms-excel');
+      document.getElementById('eksport-status').textContent = '✓ Excel lastet ned!';
+    }
+  }
+
+  function lastNed(innhold, filnavn, type) {
+    const blob = new Blob([innhold], { type });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a'); a.href = url; a.download = filnavn; a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  window.addEventListener('load', lastRapport);
+</script>
+</body>
+</html>
