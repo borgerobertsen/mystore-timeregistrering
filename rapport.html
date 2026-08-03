@@ -162,6 +162,10 @@
       <div class="card-title">Overtid per uke <span style="font-size:12px;color:var(--text-muted);font-weight:400">Grense: 40 timer/uke (aml §10-4)</span></div>
       <div id="overtid-tabell"><div class="loading">Laster...</div></div>
     </div>
+    <div class="card">
+      <div class="card-title">Overtid per dag <span style="font-size:12px;color:var(--text-muted);font-weight:400">Grense: 9 timer/dag (aml §10-4)</span></div>
+      <div id="overtid-dag-tabell"><div class="loading">Laster...</div></div>
+    </div>
   </div>
 
   <div class="tab-panel" id="panel-kundesok">
@@ -408,6 +412,40 @@
         Object.entries(perAnsattOT).sort((a, b) => b[1] - a[1]).map(([n, t]) => `${n}: <strong style="color:var(--teal-dark)">${t.toFixed(1)}t</strong>`).join(' · ') + '</div>';
     }
     document.getElementById('overtid-tabell').innerHTML = otHtml;
+
+    // ── Daglig overtid (grense 9 t/dag, aml §10-4) ──
+    const NORMAL_DAG = 9;
+    const otDagMap = {};
+    rader.forEach(r => {
+      const key = r.ansatt_navn + '|' + r.dato;
+      if (!otDagMap[key]) otDagMap[key] = { navn: r.ansatt_navn, dato: r.dato, min: 0 };
+      otDagMap[key].min += r.minutter;
+    });
+    const overtidDagRader = Object.values(otDagMap)
+      .map(v => ({ navn: v.navn, dato: v.dato, timer: v.min / 60, overtid: Math.max(0, v.min / 60 - NORMAL_DAG) }))
+      .filter(v => v.overtid > 0)
+      .sort((a, b) => String(b.dato).localeCompare(String(a.dato)) || (b.overtid - a.overtid));
+
+    let otDagHtml;
+    if (!overtidDagRader.length) {
+      otDagHtml = '<div class="empty" style="padding:1.5rem;color:var(--text-muted)">Ingen registrert overtid (over 9 t/dag) i valgt periode.</div>';
+    } else {
+      const perAnsattDagOT = {};
+      overtidDagRader.forEach(v => { perAnsattDagOT[v.navn] = (perAnsattDagOT[v.navn] || 0) + v.overtid; });
+      otDagHtml = '<table><tr><th>Ansatt</th><th>Dato</th><th>Timer denne dagen</th><th>Overtid</th></tr>';
+      overtidDagRader.forEach(v => {
+        otDagHtml += `<tr>
+          <td>${v.navn}</td>
+          <td style="color:var(--text-muted)">${formaterDato(v.dato)}</td>
+          <td class="tid-cell">${v.timer.toFixed(1)}t</td>
+          <td class="tid-cell" style="color:var(--teal-dark);font-weight:700">+${v.overtid.toFixed(1)}t</td>
+        </tr>`;
+      });
+      otDagHtml += '</table>';
+      otDagHtml += '<div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)">Sum daglig overtid i perioden — ' +
+        Object.entries(perAnsattDagOT).sort((a, b) => b[1] - a[1]).map(([n, t]) => `${n}: <strong style="color:var(--teal-dark)">${t.toFixed(1)}t</strong>`).join(' · ') + '</div>';
+    }
+    document.getElementById('overtid-dag-tabell').innerHTML = otDagHtml;
   }
 
   // ── Kundesøk – lokale treff + HubSpot-forslag ──
