@@ -113,6 +113,7 @@
     <button class="tab" onclick="byttTab('ansatte')">Per ansatt</button>
     <button class="tab" onclick="byttTab('kunder')">Per kunde</button>
     <button class="tab" onclick="byttTab('avdeling')">Per avdeling</button>
+    <button class="tab" onclick="byttTab('overtid')">Overtid</button>
     <button class="tab" onclick="byttTab('kundesok')">Kundesøk</button>
     <button class="tab" onclick="byttTab('eksport')">Eksport</button>
   </div>
@@ -153,6 +154,13 @@
     <div class="card">
       <div class="card-title">Timer per avdeling</div>
       <div id="avdeling-tabell"><div class="loading">Laster...</div></div>
+    </div>
+  </div>
+
+  <div class="tab-panel" id="panel-overtid">
+    <div class="card">
+      <div class="card-title">Overtid per uke <span style="font-size:12px;color:var(--text-muted);font-weight:400">Grense: 40 timer/uke (aml §10-4)</span></div>
+      <div id="overtid-tabell"><div class="loading">Laster...</div></div>
     </div>
   </div>
 
@@ -364,6 +372,42 @@
       </tr>`;
     });
     document.getElementById('avdeling-tabell').innerHTML = avdHtml + '</table>';
+
+    // ── Overtid (grense 40 t/uke, aml §10-4) ──
+    const NORMAL_T = 40;
+    const otUkeMap = {};
+    rader.forEach(r => {
+      const key = r.ansatt_navn + '|' + r.aar + '-' + String(r.uke_nr).padStart(2, '0');
+      if (!otUkeMap[key]) otUkeMap[key] = { navn: r.ansatt_navn, aar: r.aar, uke: r.uke_nr, min: 0 };
+      otUkeMap[key].min += r.minutter;
+    });
+    const overtidRader = Object.values(otUkeMap)
+      .map(v => ({ navn: v.navn, aar: v.aar, uke: v.uke, timer: v.min / 60, overtid: Math.max(0, v.min / 60 - NORMAL_T) }))
+      .filter(v => v.overtid > 0)
+      .sort((a, b) => (b.aar - a.aar) || (b.uke - a.uke) || (b.overtid - a.overtid));
+
+    let otHtml;
+    if (!overtidRader.length) {
+      otHtml = '<div class="empty" style="padding:1.5rem;color:var(--text-muted)">Ingen registrert overtid (over 40 t/uke) i valgt periode.</div>';
+    } else {
+      const perAnsattOT = {};
+      overtidRader.forEach(v => { perAnsattOT[v.navn] = (perAnsattOT[v.navn] || 0) + v.overtid; });
+      otHtml = '<table><tr><th>Ansatt</th><th>Uke</th><th>Timer totalt</th><th>Overtid</th><th>Merknad</th></tr>';
+      overtidRader.forEach(v => {
+        const brudd = v.overtid > 10; // aml §10-6: maks 10 t overtid pr. 7 dager
+        otHtml += `<tr>
+          <td>${v.navn}</td>
+          <td style="color:var(--text-muted)">Uke ${v.uke}, ${v.aar}</td>
+          <td class="tid-cell">${v.timer.toFixed(1)}t</td>
+          <td class="tid-cell" style="color:${brudd ? 'var(--error)' : 'var(--teal-dark)'};font-weight:700">+${v.overtid.toFixed(1)}t</td>
+          <td style="font-size:13px;color:${brudd ? 'var(--error)' : 'var(--text-muted)'}">${brudd ? '⚠ Over 10 t overtid/uke (aml §10-6)' : ''}</td>
+        </tr>`;
+      });
+      otHtml += '</table>';
+      otHtml += '<div style="margin-top:1rem;padding-top:0.75rem;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)">Sum overtid i perioden — ' +
+        Object.entries(perAnsattOT).sort((a, b) => b[1] - a[1]).map(([n, t]) => `${n}: <strong style="color:var(--teal-dark)">${t.toFixed(1)}t</strong>`).join(' · ') + '</div>';
+    }
+    document.getElementById('overtid-tabell').innerHTML = otHtml;
   }
 
   // ── Kundesøk – lokale treff + HubSpot-forslag ──
